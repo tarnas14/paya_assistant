@@ -1,7 +1,7 @@
 const getUserInfoFromQrCodeValue = async () => {
   return {
     iconColor: '#080',
-    username: 'Tom',
+    name: 'Tom',
     description: 'I\'m selling pizza',
     email: 'tom@tomAndJerry.com',
   }
@@ -10,7 +10,7 @@ const getUserInfoFromQrCodeValue = async () => {
 const getBasicUserInfo = async token => {
   return {
     iconColor: '#030',
-    username: 'Jerry',
+    name: 'Jerry',
     description: 'I\'m eating pizza',
     email: 'jerry@tomAndJerry.com',
   }

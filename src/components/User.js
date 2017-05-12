@@ -5,7 +5,7 @@ import Avatar from 'material-ui/Avatar'
 export default ({user}) => !user ? null : <Card style={{textAlign: 'start'}}>
   <CardHeader
     avatar={<Avatar backgroundColor={user.iconColor} />}
-    title={user.username}
+    title={user.name}
     subtitle={user.description || user.email}
   />
 </Card>
