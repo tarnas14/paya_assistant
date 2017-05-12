@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import Slider from 'material-ui/Slider';
-import {Card, CardHeader, CardText} from 'material-ui/Card';
+import {Card, CardHeader} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Content from '../components/Content'
