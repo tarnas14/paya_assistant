@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import QrReader from 'react-qr-reader'
 
 class Scanner extends Component {
-  constructor(props){
+  constructor (props) {
     super(props)
     this.state = {
       delay: 500,
@@ -15,7 +16,7 @@ class Scanner extends Component {
     if (!data) {
       return
     }
-    alert(data)
+    this.props.onSuccessfulScan(data)
   }
 
   handleError (error) {
@@ -40,6 +41,10 @@ class Scanner extends Component {
       </div>
     )
   }
+}
+
+Scanner.propTypes = {
+  onSuccessfulScan: PropTypes.func.isRequired
 }
 
 export default Scanner;

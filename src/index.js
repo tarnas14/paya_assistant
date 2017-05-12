@@ -18,7 +18,7 @@ import App from './App'
 import './index.css'
 
 import MyQRCode from './containers/MyQRCode'
-import Scanner from './components/Scanner'
+import Tip from './containers/Tip'
 import Content from './components/Content'
 
 const TOKEN_KEY = 'token'
@@ -69,7 +69,6 @@ MatchWhenAuthorized.propTypes = {
   authed: PropTypes.bool.isRequired
 }
 
-const Tip = () => <App><Scanner/></App>
 const MyCode = () => <App><MyQRCode/></App>
 const TipHistory = () => <App><Content>TipHistory</Content></App>
 const Stats = () => <App><Content>Stats</Content></App>
@@ -82,7 +81,7 @@ class AppWrapper extends React.Component {
       <Switch>
         <Route exact path="/login" render={(props) => <Login {...props}/>}/>
         <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyCode}/>
-        <MatchWhenAuthorized exact path="/tip" authed={loggedIn} component={Tip}/>
+        <MatchWhenAuthorized exact path="/tip" authed={loggedIn} component={() => <App><Tip/></App>}/>
         <MatchWhenAuthorized exact path="/tiphistory" authed={loggedIn} component={TipHistory}/>
         <MatchWhenAuthorized exact path="/stats" authed={loggedIn} component={Stats}/>
         <MatchWhenAuthorized exact path="/myaccount" authed={loggedIn} component={MyAccount}/>
