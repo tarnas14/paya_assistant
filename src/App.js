@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 
-import AppBar from 'material-ui/AppBar';
-import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
+import AppBar from 'material-ui/AppBar'
+import Drawer from 'material-ui/Drawer'
+import MenuItem from 'material-ui/MenuItem'
 
-import Scanner from './components/Scanner'
+import {Link} from 'react-router-dom'
+
 import QRDisplay from './components/QRDisplay'
 import './App.css'
 
@@ -15,8 +16,13 @@ class App extends Component {
       isDrawerOpen: false
     }
   }
+
   handleMenuClick = () => {
     this.setState(state => ({isDrawerOpen: !state.isDrawerOpen}))
+  }
+
+  handleMenuClose = () => {
+    this.setState({isDrawerOpen: false})
   }
 
   render() {
@@ -27,14 +33,34 @@ class App extends Component {
           onLeftIconButtonTouchTap={this.handleMenuClick}
           title="Tiper"
         />
-        <Drawer open={this.state.isDrawerOpen}>
-          <MenuItem>Tip</MenuItem>
-          <MenuItem>Tip History</MenuItem>
-          <MenuItem>Stats</MenuItem>
-          <MenuItem>My Account</MenuItem>
+        <Drawer
+          docked={false}
+          onRequestChange={open => this.setState({isDrawerOpen: open})}
+          open={this.state.isDrawerOpen}
+        >
+          <MenuItem
+            containerElement={<Link to="/tip" />}
+            onTouchTap={this.handleMenuClose}
+            primaryText="Tip"
+          />
+          <MenuItem
+            containerElement={<Link to="/tiphistory" />}
+            primaryText="History"
+            onTouchTap={this.handleMenuClose}
+          />
+          <MenuItem
+            containerElement={<Link to="/stats" />}
+            primaryText="Stats"
+            onTouchTap={this.handleMenuClose}
+          />
+          <MenuItem
+            containerElement={<Link to="/myaccount" />}
+            primaryText="MyAccount"
+            onTouchTap={this.handleMenuClose}
+          />
         </Drawer>
-        <Scanner />
         <QRDisplay value="some-test-value-123" />
+        {this.props.children}
       </div>
     )
   }

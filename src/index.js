@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import {
   BrowserRouter as Router,
   Route,
-  Link
 } from 'react-router-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin';
 // Needed for onTouchTap
@@ -14,12 +13,20 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import App from './App';
 import './index.css';
 
+import Scanner from './components/Scanner'
+
+const Tip = () => <div><Scanner /></div>
+const TipHistory = () => <div>TipHistory</div>
+const Stats = () => <div>Stats</div>
+const MyAccount = () => <div>MyAccount</div>
+
 const AppWrapper = () => (
   <div>
     <Route path="/" component={App}/>
-    <Route path="/tiphistory" component={App}/>
-    <Route path="/stats" component={App}/>
-    <Route path="/myaccount" component={App}/>
+    <Route path="/tip" component={Tip}/>
+    <Route path="/tiphistory" component={TipHistory}/>
+    <Route path="/stats" component={Stats}/>
+    <Route path="/myaccount" component={MyAccount}/>
   </div>
 )
 
