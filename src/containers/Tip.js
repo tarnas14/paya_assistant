@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import Slider from 'material-ui/Slider';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 import Content from '../components/Content'
 import Scanner from '../components/Scanner'
 import {getUserInfoFromQrCodeValue} from '../api'
@@ -26,7 +27,8 @@ class Tip extends Component {
     this.setState({tipValue: value})
   }
 
-  giveTheTip = () => {
+  giveTheTip = (event) => {
+    event.preventDefault()
     alert(JSON.stringify(this.state, null, 4))
   }
 
@@ -43,7 +45,8 @@ class Tip extends Component {
             subtitle={this.state.description}
           />
           <CardText>
-            Tip value: <strong>{this.state.tipValue}</strong>
+            Tip value:<br />
+            <TextField readOnly value={this.state.tipValue} />
           </CardText>
         </Card>
 
