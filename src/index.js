@@ -13,14 +13,15 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import App from './App';
 import './index.css';
 
-import MyQRCode from './components/containers/MyQRCode'
+import MyQRCode from './containers/MyQRCode'
 import Scanner from './components/Scanner'
+import Content from './components/Content'
 
 const MyQRCodeRoute = () => <MyQRCode />
 const Tip = () => <Scanner />
-const TipHistory = () => <div>TipHistory</div>
-const Stats = () => <div>Stats</div>
-const MyAccount = () => <div>MyAccount</div>
+const TipHistory = () => <Content>TipHistory</Content>
+const Stats = () => <Content>Stats</Content>
+const MyAccount = () => <Content>MyAccount</Content>
 
 const AppWrapper = () => (
   <div>
