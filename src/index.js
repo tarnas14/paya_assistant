@@ -29,13 +29,12 @@ const auth = {
   loggedIn: () => Boolean(localStorage.getItem(TOKEN_KEY))
 }
 
-const Login = ({setUser, location}) => {
+const Login = ({location}) => {
   const {token, afterLoginGoTo} = urljs.parseQuery(location)
   if (!token) {
     return <div>dude, get a token first</div>
   }
 
-  setUser(getBasicUserInfo(token))
   auth.login(token)
 
   const from = afterLoginGoTo || '/'
@@ -82,9 +81,9 @@ class AppWrapper extends React.Component {
     this.state = {currentUser: null}
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     if (auth.loggedIn()) {
-      this.setUser(getBasicUserInfo())
+      this.setUser(await getBasicUserInfo())
     }
   }
 
@@ -97,7 +96,7 @@ class AppWrapper extends React.Component {
     const {currentUser} = this.state
     return <div>
       <Switch>
-        <Route exact path="/login" render={(props) => <Login {...{...props, setUser: this.setUser}}/>}/>
+        <Route exact path="/login" render={(props) => <Login {...props}/>}/>
         <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyCode(currentUser)}/>
         <MatchWhenAuthorized exact path="/tip" authed={loggedIn} component={() => <App user={currentUser}><Tip/></App>}/>
         <MatchWhenAuthorized exact path="/tiphistory" authed={loggedIn} component={TipHistory(currentUser)}/>

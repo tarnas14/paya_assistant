@@ -9,12 +9,12 @@ const getUserInfoFromQrCodeValue = async () => {
   }
 }
 
-const getBasicUserInfo = token => {
+const getBasicUserInfo = async token => {
   return {
     avatar: avatar,
-    username: 'Tom',
-    description: 'I\'m selling pizza',
-    email: 'tom@tomAndJerry.com',
+    username: 'Jerry',
+    description: 'I\'m eating pizza',
+    email: 'jerry@tomAndJerry.com',
   }
 }
 
