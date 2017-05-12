@@ -62,6 +62,11 @@ class App extends Component {
             primaryText="MyAccount"
             onTouchTap={this.handleMenuClose}
           />
+          <MenuItem
+            containerElement={<Link to="/logout" />}
+            primaryText="Logout"
+            onTouchTap={this.handleMenuClose}
+          />
         </Drawer>
         {this.props.children}
       </div>
