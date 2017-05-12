@@ -9,7 +9,8 @@
     "react-dom": "^15.5.4",
     "react-qr-reader": "^1.1.0",
     "react-router-dom": "^4.1.1",
-    "react-tap-event-plugin": "^2.0.1"
+    "react-tap-event-plugin": "^2.0.1",
+    "urljs": "^2.3.1"
   },
   "devDependencies": {
     "ngrok": "^2.2.9",
