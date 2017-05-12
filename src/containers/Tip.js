@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import Slider from 'material-ui/Slider';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardHeader, CardText} from 'material-ui/Card';
+import RaisedButton from 'material-ui/RaisedButton';
 import Content from '../components/Content'
 import Scanner from '../components/Scanner'
 import {getUserInfoFromQrCodeValue} from '../api'
@@ -23,6 +24,10 @@ class Tip extends Component {
 
   handleChange = (event, value) => {
     this.setState({tipValue: value})
+  }
+
+  giveTheTip = () => {
+    alert(JSON.stringify(this.state, null, 4))
   }
 
   render () {
@@ -51,6 +56,13 @@ class Tip extends Component {
             value={this.state.tipValue}
           />
         </Content>
+
+        <RaisedButton
+          fullWidth
+          label="Give the tip"
+          primary
+          onTouchTap={this.giveTheTip}
+        />
       </Content>
     )
   }
