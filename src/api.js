@@ -9,6 +9,16 @@ const getUserInfoFromQrCodeValue = async () => {
   }
 }
 
+const getBasicUserInfo = token => {
+  return {
+    avatar: avatar,
+    username: 'Tom',
+    description: 'I\'m selling pizza',
+    email: 'tom@tomAndJerry.com',
+  }
+}
+
 export {
-  getUserInfoFromQrCodeValue
+  getUserInfoFromQrCodeValue,
+  getBasicUserInfo
 }

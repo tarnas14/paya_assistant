@@ -9,6 +9,7 @@ import {
   Redirect,
 } from 'react-router-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin'
+import {getBasicUserInfo} from './api'
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin()
@@ -28,12 +29,13 @@ const auth = {
   loggedIn: () => Boolean(localStorage.getItem(TOKEN_KEY))
 }
 
-const Login = ({location}) => {
+const Login = ({setUser, location}) => {
   const {token, afterLoginGoTo} = urljs.parseQuery(location)
   if (!token) {
     return <div>dude, get a token first</div>
   }
 
+  setUser(getBasicUserInfo(token))
   auth.login(token)
 
   const from = afterLoginGoTo || '/'
@@ -69,22 +71,38 @@ MatchWhenAuthorized.propTypes = {
   authed: PropTypes.bool.isRequired
 }
 
-const MyCode = () => <App><MyQRCode/></App>
-const TipHistory = () => <App><Content>TipHistory</Content></App>
-const Stats = () => <App><Content>Stats</Content></App>
-const MyAccount = () => <App><Content>MyAccount</Content></App>
+const MyCode = (currentUser) => () => <App user={currentUser}><MyQRCode/></App>
+const TipHistory = (currentUser) => () => <App user={currentUser}><Content>TipHistory</Content></App>
+const Stats = (currentUser) =>  () => <App user={currentUser}><Content>Stats</Content></App>
+const MyAccount =  (currentUser) => () => <App user={currentUser}><Content>MyAccount</Content></App>
 
 class AppWrapper extends React.Component {
+  constructor() {
+    super()
+    this.state = {currentUser: null}
+  }
+
+  componentDidMount() {
+    if (auth.loggedIn()) {
+      this.setUser(getBasicUserInfo())
+    }
+  }
+
+  setUser = user => {
+    this.setState({currentUser: user})
+  }
+
   render () {
     const loggedIn = auth.loggedIn()
+    const {currentUser} = this.state
     return <div>
       <Switch>
-        <Route exact path="/login" render={(props) => <Login {...props}/>}/>
-        <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyCode}/>
-        <MatchWhenAuthorized exact path="/tip" authed={loggedIn} component={() => <App><Tip/></App>}/>
-        <MatchWhenAuthorized exact path="/tiphistory" authed={loggedIn} component={TipHistory}/>
-        <MatchWhenAuthorized exact path="/stats" authed={loggedIn} component={Stats}/>
-        <MatchWhenAuthorized exact path="/myaccount" authed={loggedIn} component={MyAccount}/>
+        <Route exact path="/login" render={(props) => <Login {...{...props, setUser: this.setUser}}/>}/>
+        <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyCode(currentUser)}/>
+        <MatchWhenAuthorized exact path="/tip" authed={loggedIn} component={() => <App user={currentUser}><Tip/></App>}/>
+        <MatchWhenAuthorized exact path="/tiphistory" authed={loggedIn} component={TipHistory(currentUser)}/>
+        <MatchWhenAuthorized exact path="/stats" authed={loggedIn} component={Stats(currentUser)}/>
+        <MatchWhenAuthorized exact path="/myaccount" authed={loggedIn} component={MyAccount(currentUser)}/>
         <MatchWhenAuthorized exact path="/logout" authed={loggedIn} component={Logout}/>
         <Route path="/" component={() => <Content>you have reached the tipping point... AHAHAH YOU GET IT? TIPPING POINT<br/>(404 not found)</Content>}/>
       </Switch>

@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import AppBar from 'material-ui/AppBar'
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
+import User from './components/User'
 
 import {Link} from 'react-router-dom'
 
@@ -37,6 +38,7 @@ class App extends Component {
           onRequestChange={open => this.setState({isDrawerOpen: open})}
           open={this.state.isDrawerOpen}
         >
+          <User user={this.props.user}/>
           <MenuItem
             containerElement={<Link to="/" />}
             onTouchTap={this.handleMenuClose}
