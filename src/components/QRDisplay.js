@@ -5,7 +5,7 @@ const QRCode = require('qrcode.react')
 class QRDisplay extends Component {
   render () {
     return (
-      <QRCode value={this.props.value} />
+      <QRCode value={this.props.value} size={256} />
     )
   }
 }
