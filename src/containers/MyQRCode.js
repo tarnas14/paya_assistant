@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import QRDisplay from '../QRDisplay'
+import QRDisplay from '../components/QRDisplay'
 
 class MyQRCode extends Component {
   render () {
