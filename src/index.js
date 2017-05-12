@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
+import urljs from 'urljs'
 import {
+  Switch,
   BrowserRouter as Router,
   Route,
   Redirect,
@@ -19,44 +21,47 @@ import MyQRCode from './containers/MyQRCode'
 import Tip from './containers/Tip'
 import Content from './components/Content'
 
-const TipHistory = () => <Content>TipHistory</Content>
-const Stats = () => <Content>Stats</Content>
-const MyAccount = () => <Content>MyAccount</Content>
-const Logout = (logout) => <div><button onClick={logout}>log out here</button></div>
+const TOKEN_KEY = 'token'
+const auth = {
+  login: token => localStorage.setItem(TOKEN_KEY, token),
+  logout: () => localStorage.removeItem(TOKEN_KEY),
+  loggedIn: () => Boolean(localStorage.getItem(TOKEN_KEY))
+}
 
-class Login extends React.Component {
-  constructor () {
-    super()
-    this.state = {
-      pleaseRedirect: false
-    }
+const Login = ({location}) => {
+  const {token, afterLoginGoTo} = urljs.parseQuery(location)
+  if (!token) {
+    return <div>dude, get a token first</div>
   }
 
-  login = () => {
-    this.props.login(() => this.setState({pleaseRedirect: true}))
-  }
+  auth.login(token)
 
-  render () {
-    const from = (this.props.location && this.props.location.state) || '/'
-    const {pleaseRedirect} = this.state
-    if (pleaseRedirect) {
-      return <Redirect to={from} />
-    }
+  const from = afterLoginGoTo || '/'
+  return <Redirect to={from} />
+}
 
-    return <button onClick={this.login}>log in pl0x</button>
-  }
+const Logout = () => {
+  auth.logout();
+
+  return <Redirect to={'/'} />
+}
+
+const redirectToLoginPage = location => {
+  const API_LOGIN = 'http://our-backend/login'
+  const redirectUri = `${document.location.origin}/login?afterLoginGoTo=${document.location.pathname}`
+  const getFullString = `${API_LOGIN}?redirectUri=${encodeURIComponent(redirectUri)}`
+
+  return <div>
+    <div>redirecting to backend to login at <pre>{getFullString}</pre></div>
+    <p>they should hit {`${document.location.origin}/login?afterLoginGoTo=${encodeURIComponent(document.location.pathname)}`}&token=somethingSomething</p>
+  </div>
 }
 
 const MatchWhenAuthorized = ({component: Component, authed, ...rest}) => (
   <Route {...rest} render={renderProps => (
     authed ? (
       <Component {...renderProps} />
-    ) : (
-      <Redirect to={ {
-        pathname: '/login',
-        state: {from: renderProps.location}
-      } } />
-    )
+    ) : redirectToLoginPage(renderProps.location)
   )}/>
 )
 
@@ -64,33 +69,25 @@ MatchWhenAuthorized.propTypes = {
   authed: PropTypes.bool.isRequired
 }
 
+const MyCode = () => <App><MyQRCode/></App>
+const TipHistory = () => <App><Content>TipHistory</Content></App>
+const Stats = () => <App><Content>Stats</Content></App>
+const MyAccount = () => <App><Content>MyAccount</Content></App>
+
 class AppWrapper extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      loggedIn: false
-    }
-  }
-
-  logIn = (cb) => {
-    this.setState({loggedIn: true}, cb)
-  }
-
-  logOut = () => {
-    this.setState({loggedIn: false})
-  }
-
   render () {
-    const {loggedIn} = this.state
+    const loggedIn = auth.loggedIn()
     return <div>
-      <Route pattern="/login" render={() => <Login login={this.logIn.bind(this)}/>}/>
-      <MatchWhenAuthorized path="/" authed={loggedIn} component={App}/>
-      <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyQRCode}/>
-      <MatchWhenAuthorized path="/tip" authed={loggedIn} component={Tip}/>
-      <MatchWhenAuthorized path="/tiphistory" authed={loggedIn} component={TipHistory}/>
-      <MatchWhenAuthorized path="/stats" authed={loggedIn} component={Stats}/>
-      <MatchWhenAuthorized path="/myaccount" authed={loggedIn} component={MyAccount}/>
-      <MatchWhenAuthorized path="/logout" authed={loggedIn} component={Logout.bind(undefined, this.logOut.bind(this))}/>
+      <Switch>
+        <Route exact path="/login" render={(props) => <Login {...props}/>}/>
+        <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyCode}/>
+        <MatchWhenAuthorized exact path="/tip" authed={loggedIn} component={() => <App><Tip/></App>}/>
+        <MatchWhenAuthorized exact path="/tiphistory" authed={loggedIn} component={TipHistory}/>
+        <MatchWhenAuthorized exact path="/stats" authed={loggedIn} component={Stats}/>
+        <MatchWhenAuthorized exact path="/myaccount" authed={loggedIn} component={MyAccount}/>
+        <MatchWhenAuthorized exact path="/logout" authed={loggedIn} component={Logout}/>
+        <Route path="/" component={() => <Content>you have reached the tipping point... AHAHAH YOU GET IT? TIPPING POINT<br/>(404 not found)</Content>}/>
+      </Switch>
     </div>
   }
 }
