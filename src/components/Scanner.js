@@ -5,38 +5,38 @@ class Scanner extends Component {
   constructor(props){
     super(props)
     this.state = {
-      delay: 100,
-      result: 'No result',
+      delay: 500,
     }
 
     this.handleScan = this.handleScan.bind(this)
   }
 
   handleScan (data) {
-    this.setState({
-      result: data,
-    })
+    if (!data) {
+      return
+    }
+    alert(data)
   }
 
-  handleError (err) {
-    console.error(err)
+  handleError (error) {
+    alert(error)
   }
 
   render () {
     const previewStyle = {
-      height: 240,
-      width: 320,
+      objectFit: 'fill',
+      width: '100%',
     }
 
     return(
       <div>
         <QrReader
           delay={this.state.delay}
-          style={previewStyle}
+          facingMode="rear"
           onError={this.handleError}
           onScan={this.handleScan}
+          style={previewStyle}
         />
-        <p>{this.state.result}</p>
       </div>
     )
   }
