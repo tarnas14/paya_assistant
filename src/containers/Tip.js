@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import Slider from 'material-ui/Slider'
-import User from '../components/User'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
+import User from '../components/User'
 import Content from '../components/Content'
 import Scanner from '../components/Scanner'
 import {getUserInfoFromQrCodeValue} from '../api'
@@ -16,7 +16,7 @@ class Tip extends Component {
     this.state = {
       qrCodeValue: null,
       tipValue: 5,
-      feedback: ''
+      feedback: '',
     }
   }
 

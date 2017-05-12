@@ -15,6 +15,8 @@ import {getBasicUserInfo} from './api'
 injectTapEventPlugin()
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import {amber900} from 'material-ui/styles/colors'
 import App from './App'
 import './index.css'
 
@@ -52,9 +54,11 @@ const redirectToLoginPage = location => {
   const redirectUri = `${document.location.origin}/login?afterLoginGoTo=${document.location.pathname}`
   const getFullString = `${API_LOGIN}?redirectUri=${encodeURIComponent(redirectUri)}`
 
+  const authroute = `${document.location.origin}/login?afterLoginGoTo=${encodeURIComponent(document.location.pathname)}&token=somethingSomething`
+
   return <div>
     <div>redirecting to backend to login at <pre>{getFullString}</pre></div>
-    <p>they should hit {`${document.location.origin}/login?afterLoginGoTo=${encodeURIComponent(document.location.pathname)}`}&token=somethingSomething</p>
+    <p>they should hit <a href={authroute}>{authroute}</a></p>
   </div>
 }
 
@@ -109,8 +113,20 @@ class AppWrapper extends React.Component {
   }
 }
 
+// This replaces the textColor value on the palette
+// and then update the keys for each component that depends on it.
+// More on Colors: http://www.material-ui.com/#/customization/colors
+const muiTheme = getMuiTheme({
+  palette: {
+    primary1Color: amber900,
+  },
+  appBar: {
+    height: 50,
+  },
+})
+
 ReactDOM.render(
-  <MuiThemeProvider>
+  <MuiThemeProvider muiTheme={muiTheme}>
     <Router>
       <AppWrapper/>
     </Router>

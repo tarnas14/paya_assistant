@@ -1,8 +1,6 @@
-import avatar from './images/avatar.jpg'
-
 const getUserInfoFromQrCodeValue = async () => {
   return {
-    avatar: avatar,
+    iconColor: '#080',
     username: 'Tom',
     description: 'I\'m selling pizza',
     email: 'tom@tomAndJerry.com',
@@ -11,7 +9,7 @@ const getUserInfoFromQrCodeValue = async () => {
 
 const getBasicUserInfo = async token => {
   return {
-    avatar: avatar,
+    iconColor: '#030',
     username: 'Jerry',
     description: 'I\'m eating pizza',
     email: 'jerry@tomAndJerry.com',
