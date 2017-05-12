@@ -15,12 +15,13 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import App from './App'
 import './index.css'
 
+import MyQRCode from './containers/MyQRCode'
 import Scanner from './components/Scanner'
+import Content from './components/Content'
 
-const Tip = () => <div><Scanner /></div>
-const TipHistory = () => <div>TipHistory</div>
-const Stats = () => <div>Stats</div>
-const MyAccount = () => <div>MyAccount</div>
+const TipHistory = () => <Content>TipHistory</Content>
+const Stats = () => <Content>Stats</Content>
+const MyAccount = () => <Content>MyAccount</Content>
 const Logout = (logout) => <div><button onClick={logout}>log out here</button></div>
 
 class Login extends React.Component {
@@ -84,7 +85,8 @@ class AppWrapper extends React.Component {
     return <div>
       <Route pattern="/login" render={() => <Login login={this.logIn.bind(this)}/>}/>
       <MatchWhenAuthorized path="/" authed={loggedIn} component={App}/>
-      <MatchWhenAuthorized path="/tip" authed={loggedIn} component={Tip}/>
+      <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyQRCode}/>
+      <MatchWhenAuthorized path="/tip" authed={loggedIn} component={Scanner}/>
       <MatchWhenAuthorized path="/tiphistory" authed={loggedIn} component={TipHistory}/>
       <MatchWhenAuthorized path="/stats" authed={loggedIn} component={Stats}/>
       <MatchWhenAuthorized path="/myaccount" authed={loggedIn} component={MyAccount}/>

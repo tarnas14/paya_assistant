@@ -6,7 +6,6 @@ import MenuItem from 'material-ui/MenuItem'
 
 import {Link} from 'react-router-dom'
 
-import QRDisplay from './components/QRDisplay'
 import './App.css'
 
 class App extends Component {
@@ -39,6 +38,11 @@ class App extends Component {
           open={this.state.isDrawerOpen}
         >
           <MenuItem
+            containerElement={<Link to="/" />}
+            onTouchTap={this.handleMenuClose}
+            primaryText="My QR Code"
+          />
+          <MenuItem
             containerElement={<Link to="/tip" />}
             onTouchTap={this.handleMenuClose}
             primaryText="Tip"
@@ -64,7 +68,6 @@ class App extends Component {
             onTouchTap={this.handleMenuClose}
           />
         </Drawer>
-        <QRDisplay value="some-test-value-123" />
         {this.props.children}
       </div>
     )
