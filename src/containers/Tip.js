@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
 import Slider from 'material-ui/Slider';
 import {Card, CardHeader} from 'material-ui/Card';
+import Avatar from 'material-ui/Avatar'
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import Content from '../components/Content'
 import Scanner from '../components/Scanner'
 import {getUserInfoFromQrCodeValue} from '../api'
-import avatarImg from '../images/avatar.jpg'
 
 const MAX_CHARACTERS = 140
 
@@ -17,13 +17,14 @@ class Tip extends Component {
     this.state = {
       qrCodeValue: null,
       tipValue: 5,
-      feedback: ''
+      feedback: '',
+      iconColor: '#fff'
     }
   }
 
   handleQrCode = async (qrCodeValue) => {
-    const {userName, description} = await getUserInfoFromQrCodeValue(qrCodeValue)
-    this.setState({qrCodeValue, userName, description})
+    const {name, description, iconColor} = await getUserInfoFromQrCodeValue(qrCodeValue)
+    this.setState({qrCodeValue, name, description, iconColor})
   }
 
   handleSliderChange = (event, value) => {
@@ -52,8 +53,8 @@ class Tip extends Component {
       <Content>
         <Card style={{textAlign: 'start'}}>
           <CardHeader
-            avatar={avatarImg}
-            title={this.state.userName}
+            avatar={<Avatar backgroundColor={this.state.iconColor} />}
+            title={this.state.name}
             subtitle={this.state.description}
           />
         </Card>

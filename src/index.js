@@ -51,9 +51,11 @@ const redirectToLoginPage = location => {
   const redirectUri = `${document.location.origin}/login?afterLoginGoTo=${document.location.pathname}`
   const getFullString = `${API_LOGIN}?redirectUri=${encodeURIComponent(redirectUri)}`
 
+  const authroute = `${document.location.origin}/login?afterLoginGoTo=${encodeURIComponent(document.location.pathname)}&token=somethingSomething`
+
   return <div>
     <div>redirecting to backend to login at <pre>{getFullString}</pre></div>
-    <p>they should hit {`${document.location.origin}/login?afterLoginGoTo=${encodeURIComponent(document.location.pathname)}`}&token=somethingSomething</p>
+    <p>they should hit <a href={authroute}>{authroute}</a></p>
   </div>
 }
 

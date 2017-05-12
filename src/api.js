@@ -1,7 +1,8 @@
 const getUserInfoFromQrCodeValue = async () => {
   return {
-    userName: 'Tom',
-    description: 'I\'m selling pizza'
+    name: 'Tom',
+    description: 'I\'m selling pizza',
+    iconColor: '#080',
   }
 }
 
