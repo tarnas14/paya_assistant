@@ -1,20 +1,28 @@
 import React, {Component} from 'react'
 import Slider from 'material-ui/Slider';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import Content from '../components/Content'
 import Scanner from '../components/Scanner'
+import {getUserInfoFromQrCodeValue} from '../api'
+import avatarImg from '../images/avatar.jpg'
 
 class Tip extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
-      qrCodeValue: null
+      qrCodeValue: null,
+      tipValue: 5
     }
   }
 
-  handleQrCode = (qrCodeValue) => {
-    console.log('QR CODE VALUE', qrCodeValue)
-    this.setState({qrCodeValue})
+  handleQrCode = async (qrCodeValue) => {
+    const {userName, description} = await getUserInfoFromQrCodeValue(qrCodeValue)
+    this.setState({qrCodeValue, userName, description})
+  }
+
+  handleChange = (event, value) => {
+    this.setState({tipValue: value})
   }
 
   render () {
@@ -23,36 +31,26 @@ class Tip extends Component {
     }
     return (
       <Content>
-        <TipSlider />
-      </Content>
-    )
-  }
-}
+        <Card style={{textAlign: 'start'}}>
+          <CardHeader
+            avatar={avatarImg}
+            title={this.state.userName}
+            subtitle={this.state.description}
+          />
+          <CardText>
+            Tip value: <strong>{this.state.tipValue}</strong>
+          </CardText>
+        </Card>
 
-class TipSlider extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      tipValue: 5
-    }
-  }
-
-  handleChange = (event, value) => {
-    this.setState({tipValue: value})
-  }
-
-  render () {
-    return (
-      <Content>
-        Give a tip to Tom <br />
-        Tip value: {this.state.tipValue} <br />
-        <Slider
-          min={1}
-          max={40}
-          step={1}
-          onChange={this.handleChange}
-          value={this.state.tipValue}
-        />
+        <Content>
+          <Slider
+            min={1}
+            max={40}
+            step={1}
+            onChange={this.handleChange}
+            value={this.state.tipValue}
+          />
+        </Content>
       </Content>
     )
   }
