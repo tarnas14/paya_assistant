@@ -1,7 +1,11 @@
+import avatar from './images/avatar.jpg'
+
 const getUserInfoFromQrCodeValue = async () => {
   return {
-    userName: 'Tom',
-    description: 'I\'m selling pizza'
+    avatar: avatar,
+    username: 'Tom',
+    description: 'I\'m selling pizza',
+    email: 'tom@tomAndJerry.com',
   }
 }
 
