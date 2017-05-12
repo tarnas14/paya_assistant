@@ -8,13 +8,16 @@ import Scanner from '../components/Scanner'
 import {getUserInfoFromQrCodeValue} from '../api'
 import avatarImg from '../images/avatar.jpg'
 
+const MAX_CHARACTERS = 140
+
 class Tip extends Component {
   constructor (props) {
     super(props)
 
     this.state = {
       qrCodeValue: null,
-      tipValue: 5
+      tipValue: 5,
+      feedback: ''
     }
   }
 
@@ -23,8 +26,17 @@ class Tip extends Component {
     this.setState({qrCodeValue, userName, description})
   }
 
-  handleChange = (event, value) => {
+  handleSliderChange = (event, value) => {
     this.setState({tipValue: value})
+  }
+
+  handleFeedbackChange = (event, value) => {
+    this.setState(state => {
+      if (value.length >= MAX_CHARACTERS) {
+        return
+      }
+      return {feedback: value}
+    })
   }
 
   giveTheTip = (event) => {
@@ -44,19 +56,26 @@ class Tip extends Component {
             title={this.state.userName}
             subtitle={this.state.description}
           />
-          <CardText>
-            Tip value:<br />
-            <TextField readOnly value={this.state.tipValue} />
-          </CardText>
         </Card>
 
         <Content>
+          Tip value:<br />
+          <TextField readOnly value={this.state.tipValue} />
           <Slider
             min={1}
             max={40}
             step={1}
-            onChange={this.handleChange}
+            onChange={this.handleSliderChange}
             value={this.state.tipValue}
+          />
+          <TextField
+            fullWidth
+            hintText="Leave feedback"
+            multiLine
+            rows={2}
+            rowsMax={4}
+            onChange={this.handleFeedbackChange}
+            value={this.state.feedback}
           />
         </Content>
 
