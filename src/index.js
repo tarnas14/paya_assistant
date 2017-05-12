@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import {
+  Switch,
   BrowserRouter as Router,
   Route,
   Redirect,
@@ -18,11 +19,6 @@ import './index.css'
 import MyQRCode from './containers/MyQRCode'
 import Scanner from './components/Scanner'
 import Content from './components/Content'
-
-const TipHistory = () => <Content>TipHistory</Content>
-const Stats = () => <Content>Stats</Content>
-const MyAccount = () => <Content>MyAccount</Content>
-const Logout = (logout) => <div><button onClick={logout}>log out here</button></div>
 
 class Login extends React.Component {
   constructor () {
@@ -47,16 +43,16 @@ class Login extends React.Component {
   }
 }
 
-const MatchWhenAuthorized = ({component: Component, authed, ...rest}) => (
+const goToLogin = () => {
+  document.location = 'http://psy.pl'
+  return null
+}
+
+const MatchWhenAuthorized = ({component: Component, authed, ...rest}) => console.log() || (
   <Route {...rest} render={renderProps => (
     authed ? (
       <Component {...renderProps} />
-    ) : (
-      <Redirect to={ {
-        pathname: '/login',
-        state: {from: renderProps.location}
-      } } />
-    )
+    ) : goToLogin()
   )}/>
 )
 
@@ -64,11 +60,18 @@ MatchWhenAuthorized.propTypes = {
   authed: PropTypes.bool.isRequired
 }
 
+const Tip = () => <App><Scanner/></App>
+const MyCode = () => <App><MyQRCode/></App>
+const TipHistory = () => <App><Content>TipHistory</Content></App>
+const Stats = () => <App><Content>Stats</Content></App>
+const MyAccount = () => <App><Content>MyAccount</Content></App>
+const Logout = (logout) => <div><button onClick={logout}>log out here</button></div>
+
 class AppWrapper extends React.Component {
   constructor() {
     super()
     this.state = {
-      loggedIn: false
+      loggedIn: Boolean(localStorage.getItem('loggedIn'))
     }
   }
 
@@ -83,14 +86,16 @@ class AppWrapper extends React.Component {
   render () {
     const {loggedIn} = this.state
     return <div>
-      <Route pattern="/login" render={() => <Login login={this.logIn.bind(this)}/>}/>
-      <MatchWhenAuthorized path="/" authed={loggedIn} component={App}/>
-      <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyQRCode}/>
-      <MatchWhenAuthorized path="/tip" authed={loggedIn} component={Scanner}/>
-      <MatchWhenAuthorized path="/tiphistory" authed={loggedIn} component={TipHistory}/>
-      <MatchWhenAuthorized path="/stats" authed={loggedIn} component={Stats}/>
-      <MatchWhenAuthorized path="/myaccount" authed={loggedIn} component={MyAccount}/>
-      <MatchWhenAuthorized path="/logout" authed={loggedIn} component={Logout.bind(undefined, this.logOut.bind(this))}/>
+      <Switch>
+        <Route exact path="/login" render={(props) => <Login {...props} login={this.logIn.bind(this)}/>}/>
+        <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyCode}/>
+        <MatchWhenAuthorized exact path="/tip" authed={loggedIn} component={Tip}/>
+        <MatchWhenAuthorized exact path="/tiphistory" authed={loggedIn} component={TipHistory}/>
+        <MatchWhenAuthorized exact path="/stats" authed={loggedIn} component={Stats}/>
+        <MatchWhenAuthorized exact path="/myaccount" authed={loggedIn} component={MyAccount}/>
+        <MatchWhenAuthorized exact path="/logout" authed={loggedIn} component={Logout.bind(undefined, this.logOut.bind(this))}/>
+        <Route path="/" component={() => <Content>you have reached the tipping point... AHAHAH YOU GET IT? TIPPING POINT<br/>(404 not found)</Content>}/>
+      </Switch>
     </div>
   }
 }
