@@ -16,7 +16,7 @@ import App from './App'
 import './index.css'
 
 import MyQRCode from './containers/MyQRCode'
-import Scanner from './components/Scanner'
+import Tip from './containers/Tip'
 import Content from './components/Content'
 
 const TipHistory = () => <Content>TipHistory</Content>
@@ -41,7 +41,7 @@ class Login extends React.Component {
     const {pleaseRedirect} = this.state
     if (pleaseRedirect) {
       return <Redirect to={from} />
-    } 
+    }
 
     return <button onClick={this.login}>log in pl0x</button>
   }
@@ -73,7 +73,7 @@ class AppWrapper extends React.Component {
   }
 
   logIn = (cb) => {
-    this.setState({loggedIn: true}, cb) 
+    this.setState({loggedIn: true}, cb)
   }
 
   logOut = () => {
@@ -86,7 +86,7 @@ class AppWrapper extends React.Component {
       <Route pattern="/login" render={() => <Login login={this.logIn.bind(this)}/>}/>
       <MatchWhenAuthorized path="/" authed={loggedIn} component={App}/>
       <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyQRCode}/>
-      <MatchWhenAuthorized path="/tip" authed={loggedIn} component={Scanner}/>
+      <MatchWhenAuthorized path="/tip" authed={loggedIn} component={Tip}/>
       <MatchWhenAuthorized path="/tiphistory" authed={loggedIn} component={TipHistory}/>
       <MatchWhenAuthorized path="/stats" authed={loggedIn} component={Stats}/>
       <MatchWhenAuthorized path="/myaccount" authed={loggedIn} component={MyAccount}/>
