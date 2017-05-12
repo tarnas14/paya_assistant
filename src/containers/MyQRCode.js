@@ -1,10 +1,13 @@
 import React, {Component} from 'react'
 import QRDisplay from '../components/QRDisplay'
+import Content from '../components/Content'
 
 class MyQRCode extends Component {
   render () {
     return (
-      <QRDisplay value="some-test-value-123" />
+      <Content>
+        <QRDisplay value="some-test-value-123" />
+      </Content>
     )
   }
 }
