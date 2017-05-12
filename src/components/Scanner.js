@@ -11,6 +11,7 @@ class Test extends Component {
 
     this.handleScan = this.handleScan.bind(this)
   }
+
   handleScan (data) {
     this.setState({
       result: data,
@@ -20,6 +21,7 @@ class Test extends Component {
   handleError (err) {
     console.error(err)
   }
+
   render () {
     const previewStyle = {
       height: 240,
