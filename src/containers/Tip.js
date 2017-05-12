@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
 import Slider from 'material-ui/Slider'
+import Dialog from 'material-ui/Dialog'
 import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import User from '../components/User'
+import FlatButton from 'material-ui/FlatButton'
 import Content from '../components/Content'
 import Scanner from '../components/Scanner'
 import {getUserInfoFromQrCodeValue} from '../api'
@@ -17,6 +19,7 @@ class Tip extends Component {
       qrCodeValue: null,
       tipValue: 5,
       feedback: '',
+      confirmDialogOpen: false,
     }
   }
 
@@ -38,9 +41,21 @@ class Tip extends Component {
     })
   }
 
-  giveTheTip = (event) => {
+  giveTheTip = event => {
     event.preventDefault()
-    alert(JSON.stringify(this.state, null, 4))
+    this.setState({confirmDialogOpen: true})
+  }
+
+  handleConfirmDialog = event => {
+    event.preventDefault()
+    this.setState({confirmDialogOpen: false}, () => {
+      alert(JSON.stringify(this.state, null, 4))
+    })
+  }
+
+  handleCancelDialog = event => {
+    event.preventDefault()
+    this.setState({confirmDialogOpen: false})
   }
 
   render () {
@@ -77,6 +92,24 @@ class Tip extends Component {
           label="Give the tip"
           primary
           onTouchTap={this.giveTheTip}
+        />
+
+        <Dialog
+          title="Give the tip?"
+          actions={[
+            <FlatButton
+              label="Cancel"
+              primary={true}
+              onTouchTap={this.handleCancelDialog}
+            />,
+            <FlatButton
+              label="Confirm"
+              primary={true}
+              onTouchTap={this.handleConfirmDialog}
+            />
+          ]}
+          modal={true}
+          open={this.state.confirmDialogOpen}
         />
       </Content>
     )
