@@ -21,7 +21,7 @@ const getHistory = async () => {
   return fetch(`${apiEndpoint}/profile/tips?token=${auth.token()}`).then(response => response.json())
 }
 
-const giveTip = ({recipientGuid, amount, message}) => {
+const giveTip = async ({recipientGuid, amount, message}) => {
   // post /tips
   const tipPayload = {
     recipient_guid: recipientGuid,
@@ -29,7 +29,7 @@ const giveTip = ({recipientGuid, amount, message}) => {
     message,
   }
 
-  return fetch(
+  const response = await fetch(
     `${apiEndpoint}/tips?token=${auth.token()}`,
     {
       method: 'POST',
@@ -38,7 +38,9 @@ const giveTip = ({recipientGuid, amount, message}) => {
       },
       body: qs.stringify(tipPayload)
     }
-  ).then(response => response.json()).catch(error => alert(error))
+  )
+
+  return response.json()
 }
 
 export {
