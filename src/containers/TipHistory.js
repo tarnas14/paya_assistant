@@ -57,7 +57,8 @@ export default class TipHistory extends Component {
         {Boolean(tipsHistory.received.length) && tipsHistory.received.map(this.displayTip)}
       </Tab>
       <Tab label="Given tips">
-        {tipsHistory.given.map(this.displayTip)}
+        {!Boolean(tipsHistory.given.length) && <CenteredContent><p>You haven't given any tips yet</p></CenteredContent>}
+        {Boolean(tipsHistory.given.length) && tipsHistory.given.map(this.displayTip)}
       </Tab>
     </Tabs>
   }
