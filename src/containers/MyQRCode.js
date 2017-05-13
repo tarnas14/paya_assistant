@@ -4,9 +4,11 @@ import Content from '../components/Content'
 
 class MyQRCode extends Component {
   render () {
+    const canDisplay = this.props.currentUser && this.props.currentUser.guid
     return (
       <Content>
-        <QRDisplay guid={this.props.guid} />
+        {!canDisplay && <div>cannot display qr code</div>}
+        {canDisplay && <QRDisplay value={this.props.currentUser.guid} />}
       </Content>
     )
   }

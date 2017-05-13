@@ -4,11 +4,7 @@ const apiEndpoint = process.env.REACT_APP_API
 
 const getUserInfoFromQrCodeValue = async (qrCodeValue) => {
   // get /users/{guid}
-  return {
-    description: 'I\'m selling pizza',
-    iconColor: '#080',
-    name: 'Tom',
-  }
+  return fetch(`${apiEndpoint}/users/${qrCodeValue}?token=${auth.token()}`).then(response => response.json())
 }
 
 const getBasicUserInfo = async () => {

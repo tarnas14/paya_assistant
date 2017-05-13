@@ -58,7 +58,7 @@ MatchWhenAuthorized.propTypes = {
   authed: PropTypes.bool.isRequired
 }
 
-const MyCode = currentUser => () => <App user={currentUser}><MyQRCode guid={currentUser.guid}/></App>
+const MyCode = currentUser => () => <App user={currentUser}><MyQRCode currentUser={currentUser}/></App>
 const TipHistory = currentUser => () => <App user={currentUser}><TipHistoryContainer currentUser={currentUser}/></App>
 const Stats = currentUser =>  () => <App user={currentUser}><Content>Stats</Content></App>
 const MyAccount =  currentUser => () => <App user={currentUser}><Content>MyAccount</Content></App>
