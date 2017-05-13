@@ -11,7 +11,7 @@ class QRDisplay extends Component {
 }
 
 QRDisplay.propTypes = {
-  value: PropTypes.string.isRequired
+  guid: PropTypes.string.isRequired
 }
 
 export default QRDisplay
