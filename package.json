@@ -21,7 +21,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "ngrok": "ngrok http 3000",
-    "config": "cp ./src/config.template.js ./src/config.js"
+    "ngrok": "ngrok http 3000"
   }
 }
