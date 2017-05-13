@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Snackbar from 'material-ui/Snackbar'
 import ReactDOM from 'react-dom'
 import urijs from 'urijs'
 import {
@@ -9,10 +10,11 @@ import {
   Redirect,
 } from 'react-router-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin'
-import {getBasicUserInfo} from './api'
+import {getBasicUserInfo, setIncomingAccount, setOutgoingAccount} from './api'
 import auth from './auth'
 import TipHistoryContainer from './containers/TipHistory'
 import StatsContainer from './containers/Stats'
+import MyAccountContainer from './containers/MyAccount'
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
@@ -62,12 +64,19 @@ MatchWhenAuthorized.propTypes = {
 const MyCode = currentUser => () => <App user={currentUser}><MyQRCode currentUser={currentUser}/></App>
 const TipHistory = currentUser => () => <App user={currentUser}><TipHistoryContainer currentUser={currentUser}/></App>
 const Stats = (currentUser) =>  () => <App user={currentUser}><StatsContainer /></App>
-const MyAccount =  currentUser => () => <App user={currentUser}><Content>MyAccount</Content></App>
+const MyAccount =  (currentUser, setIncomingAccount, setOutgoingAccount) => () => <App user={currentUser}><MyAccountContainer
+  currentUser={currentUser}
+  setIncoming={setIncomingAccount}
+  setOutgoing={setOutgoingAccount}
+/></App>
 
 class AppWrapper extends React.Component {
   constructor() {
     super()
-    this.state = {currentUser: null}
+    this.state = {
+      error: '',
+      currentUser: null
+    }
   }
 
   async componentDidMount() {
@@ -80,17 +89,46 @@ class AppWrapper extends React.Component {
     this.setState({currentUser: user})
   }
 
+  setIncomingAccount = async payload => {
+    const {error} = await setIncomingAccount(payload)
+
+    this.setState(s => ({
+      error,
+      currentUser: {
+        ...s.currentUser,
+        hasIncomingAccount: !error
+      }
+    }))
+  }
+
+  setOutgoingAccount = async payload => {
+    const {error} = await setOutgoingAccount(payload)
+
+    this.setState(s => ({
+      error,
+      currentUser: {
+        ...s.currentUser,
+        hasOutgoingAccount: !error
+      }
+    }))
+  }
+
   render () {
     const loggedIn = auth.loggedIn()
     const {currentUser} = this.state
     return <div>
+      <Snackbar
+        open={Boolean(this.state.error)}
+        message={`ERROR: ${this.state.error}`}
+        autoHideDuration={4000}
+      />
       <Switch>
         <Route exact path="/login" render={(props) => <Login {...props}/>}/>
         <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyCode(currentUser)}/>
         <MatchWhenAuthorized exact path="/tip" authed={loggedIn} component={() => <App user={currentUser}><Tip/></App>}/>
         <MatchWhenAuthorized exact path="/tiphistory" authed={loggedIn} component={TipHistory(currentUser)}/>
         <MatchWhenAuthorized exact path="/stats" authed={loggedIn} component={Stats(currentUser)}/>
-        <MatchWhenAuthorized exact path="/myaccount" authed={loggedIn} component={MyAccount(currentUser)}/>
+        <MatchWhenAuthorized exact path="/myaccount" authed={loggedIn} component={MyAccount(currentUser, this.setIncomingAccount.bind(this), this.setOutgoingAccount.bind(this))}/>
         <MatchWhenAuthorized exact path="/logout" authed={loggedIn} component={Logout}/>
         <Route path="/" component={() => <Content>you have reached the tipping point... AHAHAH YOU GET IT? TIPPING POINT<br/>(404 not found)</Content>}/>
       </Switch>
