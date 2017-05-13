@@ -51,13 +51,20 @@ class Tip extends Component {
   handleConfirmDialog = async event => {
     event.preventDefault()
     console.log(JSON.stringify(this.state, null, 4))
-    await giveTip({
+
+    const response = await giveTip({
       recipientGuid: this.state.recipientGuid,
       amount: this.state.amount,
       message: this.state.message,
-    }, () => {
-      alert('Some kind of error')
     })
+
+    if (response.error) {
+      alert('Error occured during giving a tip')
+
+      window.location = '/'
+
+      return
+    }
 
     this.setState({successFulTip: true})
   }
