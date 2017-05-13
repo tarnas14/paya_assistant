@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import {Tabs, Tab} from 'material-ui/Tabs'
-import {getTipsHistory} from '../api'
+import {getHistory} from '../api'
 import {CardText, Card, CardHeader} from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar'
 import sortBy from 'lodash/sortBy'
 import reverse from 'lodash/reverse'
+import CenteredContent from '../components/Content'
 
 const Content = ({children}) => <div style={{margin: '20px', padding: '20px', position: 'relative'}}>{children}</div>
 
@@ -17,13 +18,15 @@ export default class TipHistory extends Component {
   }
 
   async componentDidMount () {
-    const tipsFromApi = await getTipsHistory()
+    const tipsFromApi = await getHistory()
+
     const magic = tips => reverse(sortBy(tips.map(tip => ({
       recipientName: tip.recipientName, 
       recipientColor: tip.recipientColor,
       amount: tip.amount,
       date: tip.date.date
     })), ['date']))
+
     this.setState({tipsHistory: {
       given: magic(tipsFromApi.given),
       received: magic(tipsFromApi.received)
@@ -31,7 +34,7 @@ export default class TipHistory extends Component {
   }
 
   displayTip = tip => {
-    return  <Content>
+    return  <Content key={tip.date}>
       <p style={{position: 'absolute', right: '5%', fontWeight: 'bold', fontSize: '1.1em'}}>{(tip.amount/100).toFixed(2)} zł</p>
       <Card>
       <CardHeader
@@ -50,7 +53,8 @@ export default class TipHistory extends Component {
 
     return <Tabs>
       <Tab label="Otrzymane">
-        {tipsHistory.received.map(this.displayTip)}
+        {!Boolean(tipsHistory.received.length) && <CenteredContent><p>Nie otrzymałeś jeszcze żadnych tipów</p></CenteredContent>}
+        {Boolean(tipsHistory.received.length) && tipsHistory.received.map(this.displayTip)}
       </Tab>
       <Tab label="Przekazane">
         {tipsHistory.given.map(this.displayTip)}
