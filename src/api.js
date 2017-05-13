@@ -13,18 +13,7 @@ const getBasicUserInfo = async () => {
 }
 
 const getProfileStats = async () => {
-  // get /profile/stats
-  return {
-    given: {
-      total: 40,
-      given: 4,
-      date: '2017-05-12',
-    },
-    received: {
-      total: 5,
-      received: 1,
-      date: '2017-04-01'
-    }}
+  return fetch(`${apiEndpoint}/profile/stats?token=${auth.token()}`).then(response => response.json())
 }
 
 const getHistory = async () => {
