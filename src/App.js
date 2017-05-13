@@ -48,18 +48,18 @@ class App extends Component {
         >
           <User user={this.props.user}/>
           <MenuItem
-            style={{textAlign: 'left'}}
-            leftIcon={<RemoveRedEye />}
-            containerElement={<Link to="/" />}
-            onTouchTap={this.handleMenuClose}
-            primaryText="My QR Code"
-          />
-          <MenuItem
             leftIcon={<EuroSymbol/>}
             style={{textAlign: 'left'}}
-            containerElement={<Link to="/tip" />}
+            containerElement={<Link to="/" />}
             onTouchTap={this.handleMenuClose}
             primaryText="Tip"
+          />
+          <MenuItem
+            style={{textAlign: 'left'}}
+            leftIcon={<RemoveRedEye />}
+            containerElement={<Link to="/mycode" />}
+            onTouchTap={this.handleMenuClose}
+            primaryText="My QR Code"
           />
           <MenuItem
             style={{textAlign: 'left'}}

@@ -16,6 +16,7 @@ const initialState = {
   amount: 5,
   message: '',
   confirmDialogOpen: false,
+  scan: false,
   isRedirecting: false,
 }
 
@@ -77,6 +78,11 @@ class Tip extends Component {
     this.setState({confirmDialogOpen: false})
   }
 
+  doScan = event => {
+    event.preventDefault()
+    this.setState({scan: true})
+  }
+
   render () {
     if (!this.props.currentUser) {
       return <Loading />
@@ -111,7 +117,11 @@ class Tip extends Component {
       )
     }
 
-    if (!this.state.recipientGuid) {
+    if(!this.state.scan) {
+      return <RaisedButton label="Leave a tip!" primary onClick={this.doScan} style={{backgroundColor: 'rgb(255, 111, 0)', marginTop: '60px', padding: '20px'}}/>
+    }
+
+    if (!this.state.recipientGuid && this.state.scan) {
       return <Scanner onSuccessfulScan={this.handleQrCode} />
     }
 
