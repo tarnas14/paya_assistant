@@ -5,6 +5,7 @@ import {CardText, Card, CardHeader, CardActions} from 'material-ui/Card'
 import {getProfileAccounts} from '../api'
 import FlatButton from 'material-ui/FlatButton'
 import Tick from 'material-ui/svg-icons/action/done'
+import './MyAccount.css'
 
 export default class MyAccount extends Component {
   constructor () {
@@ -24,7 +25,7 @@ export default class MyAccount extends Component {
 
     const {accounts} = this.state
 
-    return <div style={{maxWidth: '60%', margin: '0 auto'}}><Content>
+    return <div className="myAccountContainer" style={{}}><Content>
       <User user={currentUser} displayEmail>
         <CardText>
           {accounts.map(account => <Card key={account.account.iban} style={{testAlign: 'right'}}>
