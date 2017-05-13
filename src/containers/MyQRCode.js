@@ -6,7 +6,7 @@ class MyQRCode extends Component {
   render () {
     return (
       <Content>
-        <QRDisplay value="some-test-value-123" />
+        <QRDisplay guid={this.props.guid} />
       </Content>
     )
   }
