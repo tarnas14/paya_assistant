@@ -52,11 +52,11 @@ export default class TipHistory extends Component {
     }
 
     return <Tabs>
-      <Tab label="Otrzymane">
-        {!Boolean(tipsHistory.received.length) && <CenteredContent><p>Nie otrzymałeś jeszcze żadnych tipów</p></CenteredContent>}
+      <Tab label="Received tips">
+        {!Boolean(tipsHistory.received.length) && <CenteredContent><p>You haven't received any tips yet</p></CenteredContent>}
         {Boolean(tipsHistory.received.length) && tipsHistory.received.map(this.displayTip)}
       </Tab>
-      <Tab label="Przekazane">
+      <Tab label="Given tips">
         {tipsHistory.given.map(this.displayTip)}
       </Tab>
     </Tabs>
