@@ -65,6 +65,10 @@ const setIncomingAccount = async ({accountId, bankId, iban}) => {
     }
   )
 
+  if (response.status < 200 || response.status >= 300) {
+    return {error: response.statusText} 
+  }
+
   return response.json()
 }
 
