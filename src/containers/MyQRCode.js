@@ -8,7 +8,7 @@ class MyQRCode extends Component {
     return (
       <Content>
         {!canDisplay && <div>cannot display qr code</div>}
-        {canDisplay && <QRDisplay value={this.props.currentUser.guid} />}
+        {canDisplay && <QRDisplay guid={this.props.currentUser.guid} />}
       </Content>
     )
   }

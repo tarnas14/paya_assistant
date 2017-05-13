@@ -10,7 +10,7 @@ const getUserInfoFromQrCodeValue = async (qrCodeValue) => {
 
 const getBasicUserInfo = async () => {
   // get /profile
-  return fetch(`${apiEndpoint}/profile?token=${auth.token()}`).then(response => response.json())
+  return fetch(`${apiEndpoint}/profile?token=${auth.token()}`).then(response => response.json()).catch(console.log)
 }
 
 const getProfileStats = async () => {

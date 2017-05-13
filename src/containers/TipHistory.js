@@ -31,7 +31,7 @@ export default class TipHistory extends Component {
   }
 
   displayReceived = tip => {
-    return  <Content key={tip.date}>
+    return  <Content key={`${tip.date}${tip.amount}`}>
       <p style={{position: 'absolute', right: '5%', fontWeight: 'bold', fontSize: '1.1em'}}>{(tip.amount/100).toFixed(2)} PLN</p>
       <Card>
       <CardHeader
@@ -43,7 +43,7 @@ export default class TipHistory extends Component {
   }
 
   displayGiven = tip => {
-    return  <Content key={tip.date}>
+    return  <Content key={`${tip.date}${tip.amount}`}>
       <p style={{position: 'absolute', right: '5%', fontWeight: 'bold', fontSize: '1.1em'}}><Money val={tip.amount}/></p>
       <Card>
       <CardHeader
