@@ -4,8 +4,8 @@ import {getHistory} from '../api'
 import {Card, CardHeader} from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar'
 import CenteredContent from '../components/Content'
+import Loading from '../components/Loading'
 import Money from '../components/Money'
-import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 const Content = ({children}) => <div style={{margin: '20px', padding: '20px', position: 'relative'}}>{children}</div>
 
@@ -68,16 +68,7 @@ export default class TipHistory extends Component {
     const {tipsHistory} = this.state
 
     if (!tipsHistory) {
-      return <RefreshIndicator
-        size={40}
-        left={0}
-        top={40}
-        status="loading"
-        style={{
-          display: 'inline-block',
-          position: 'relative',
-        }}
-      />
+      return <Loading />
     }
 
     return <Tabs>
