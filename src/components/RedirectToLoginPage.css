@@ -1,0 +1,18 @@
+.loginPage.content {
+    padding: 0;
+    margin: 0;
+}
+
+.loginPage .logo {
+    padding: 50px 0;
+}
+
+.loginPage .form {
+    padding: 70px 0;
+    background: #ff6f00;
+}
+
+.loginPage .form .half {
+    width: 75%;
+    margin: 0 auto;
+}

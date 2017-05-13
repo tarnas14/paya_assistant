@@ -4,7 +4,7 @@ import './Content.css'
 class Content extends Component {
   render () {
     return(
-      <div className="content">
+      <div className={"content " + this.props.className}>
         {this.props.children}
       </div>
     )
