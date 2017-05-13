@@ -10,6 +10,7 @@
     "react-qr-reader": "^1.1.0",
     "react-router-dom": "^4.1.1",
     "react-tap-event-plugin": "^2.0.1",
+    "recompose": "^0.23.4",
     "urijs": "^1.18.10"
   },
   "devDependencies": {
