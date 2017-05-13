@@ -7,7 +7,7 @@ import CenteredContent from '../components/Content'
 import Loading from '../components/Loading'
 import Money from '../components/Money'
 
-const Content = ({children}) => <div style={{margin: '20px', padding: '20px', position: 'relative'}}>{children}</div>
+const Content = ({children}) => <div style={{margin: '5px 15px 5px 15px', padding: '15px', position: 'relative'}}>{children}</div>
 
 export default class TipHistory extends Component {
   constructor () {

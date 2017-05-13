@@ -7,7 +7,7 @@ import Money from '../components/Money'
 import Loyalty from 'material-ui/svg-icons/action/loyalty'
 import Loading from '../components/Loading'
 
-const Content = ({children}) => <div style={{margin: '20px', padding: '20px', position: 'relative'}}>{children}</div>
+const Content = ({children}) => <div style={{margin: '5px 15px 5px 15px', padding: '15px', position: 'relative'}}>{children}</div>
 
 export default class Stats extends Component {
   constructor () {
