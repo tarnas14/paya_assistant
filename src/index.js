@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
-import urljs from 'urljs'
+import urijs from 'urijs'
 import {
   Switch,
   BrowserRouter as Router,
@@ -32,7 +32,7 @@ const auth = {
 }
 
 const Login = ({location}) => {
-  const {token, afterLoginGoTo} = urljs.parseQuery(location)
+  const {token, afterLoginGoTo} = urijs.parseQuery(location.search)
   if (!token) {
     return <div>dude, get a token first</div>
   }
