@@ -6,6 +6,6 @@ export default ({user}) => !user ? null : <Card style={{textAlign: 'start'}}>
   <CardHeader
     avatar={<Avatar backgroundColor={user.iconColor} />}
     title={user.name}
-    subtitle={user.description || user.email || ''}
+    subtitle={user.description || ''}
   />
 </Card>
