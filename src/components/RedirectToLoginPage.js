@@ -2,7 +2,6 @@ import React from 'react'
 import Content from '../components/Content'
 import logo from '../images/logo.png'
 import RaisedButton from 'material-ui/RaisedButton'
-import config from '../config'
 
 const isDev = () => process.env.NODE_ENV === 'development'
 
