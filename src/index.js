@@ -10,6 +10,8 @@ import {
 } from 'react-router-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import {getBasicUserInfo} from './api'
+import auth from './auth'
+
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin()
@@ -23,13 +25,7 @@ import './index.css'
 import MyQRCode from './containers/MyQRCode'
 import Tip from './containers/Tip'
 import Content from './components/Content'
-
-const TOKEN_KEY = 'token'
-const auth = {
-  login: token => localStorage.setItem(TOKEN_KEY, token),
-  logout: () => localStorage.removeItem(TOKEN_KEY),
-  loggedIn: () => Boolean(localStorage.getItem(TOKEN_KEY))
-}
+import redirectToLoginPage from './components/RedirectToLoginPage'
 
 const Login = ({location}) => {
   const {token, afterLoginGoTo} = urijs.parseQuery(location.search)
@@ -49,24 +45,11 @@ const Logout = () => {
   return <Redirect to={'/'} />
 }
 
-const redirectToLoginPage = location => {
-  const API_LOGIN = 'http://our-backend/login'
-  const redirectUri = `${document.location.origin}/login?afterLoginGoTo=${document.location.pathname}`
-  const getFullString = `${API_LOGIN}?redirectUri=${encodeURIComponent(redirectUri)}`
-
-  const authroute = `${document.location.origin}/login?afterLoginGoTo=${encodeURIComponent(document.location.pathname)}&token=somethingSomething`
-
-  return <div>
-    <div>redirecting to backend to login at <pre>{getFullString}</pre></div>
-    <p>they should hit <a href={authroute}>{authroute}</a></p>
-  </div>
-}
-
 const MatchWhenAuthorized = ({component: Component, authed, ...rest}) => (
   <Route {...rest} render={renderProps => (
     authed ? (
       <Component {...renderProps} />
-    ) : redirectToLoginPage(renderProps.location)
+    ) : redirectToLoginPage()
   )}/>
 )
 
