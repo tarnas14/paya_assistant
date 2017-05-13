@@ -4,6 +4,7 @@ import Content from '../components/Content'
 import {CardText, Card, CardHeader, CardActions} from 'material-ui/Card'
 import {getProfileAccounts} from '../api'
 import FlatButton from 'material-ui/FlatButton'
+import Tick from 'material-ui/svg-icons/action/done'
 
 export default class MyAccount extends Component {
   constructor () {
@@ -35,12 +36,12 @@ export default class MyAccount extends Component {
               /> 
               <CardText expandable={true}>{account.account.iban}</CardText>
               <CardActions>
-                <FlatButton disabled={currentUser.hasIncomingAccount} primary label="INCOMING" onClick={this.props.setIncoming.bind(undefined, {
+                <FlatButton icon={currentUser.hasIncomingAccount && <Tick/>} disabled={currentUser.hasIncomingAccount} primary label="INCOMING" onClick={this.props.setIncoming.bind(undefined, {
                   bankId: account.bank.id,
                   accountId: account.account.id,
                   iban: account.account.iban
                 })} />
-                <FlatButton disabled={currentUser.hasOutgoingAccount} secondary label="OUTGOING" onClick={this.props.setOutgoing.bind(undefined, {
+                <FlatButton icon={currentUser.hasIncomingAccount && <Tick/>} disabled={currentUser.hasOutgoingAccount} secondary label="OUTGOING" onClick={this.props.setOutgoing.bind(undefined, {
                   bankId: account.bank.id,
                   accountId: account.account.id,
                   iban: account.account.iban
