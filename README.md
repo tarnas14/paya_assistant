@@ -1,7 +1,7 @@
 ## Building for prodution
 
 ```
-REACT_APP_API_LOGIN=auth_url yarn build
+REACT_APP_API=api_endpoint REACT_APP_API_LOGIN=auth_url yarn build
 ```
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
