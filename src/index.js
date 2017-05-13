@@ -11,6 +11,7 @@ import {
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import {getBasicUserInfo} from './api'
 import auth from './auth'
+import TipHistoryContainer from './containers/TipHistory'
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
@@ -58,7 +59,7 @@ MatchWhenAuthorized.propTypes = {
 }
 
 const MyCode = (currentUser) => () => <App user={currentUser}><MyQRCode/></App>
-const TipHistory = (currentUser) => () => <App user={currentUser}><Content>TipHistory</Content></App>
+const TipHistory = (currentUser) => () => <App user={currentUser}><TipHistoryContainer /></App>
 const Stats = (currentUser) =>  () => <App user={currentUser}><Content>Stats</Content></App>
 const MyAccount =  (currentUser) => () => <App user={currentUser}><Content>MyAccount</Content></App>
 
