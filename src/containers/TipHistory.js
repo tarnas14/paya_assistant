@@ -35,7 +35,7 @@ export default class TipHistory extends Component {
 
   displayTip = tip => {
     return  <Content key={tip.date}>
-      <p style={{position: 'absolute', right: '5%', fontWeight: 'bold', fontSize: '1.1em'}}>{(tip.amount/100).toFixed(2)} zł</p>
+      <p style={{position: 'absolute', right: '5%', fontWeight: 'bold', fontSize: '1.1em'}}>{(tip.amount/100).toFixed(2)} PLN</p>
       <Card>
       <CardHeader
         avatar={<Avatar backgroundColor={tip.recipientColor} />}
