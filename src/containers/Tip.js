@@ -7,7 +7,7 @@ import User from '../components/User'
 import FlatButton from 'material-ui/FlatButton'
 import Content from '../components/Content'
 import Scanner from '../components/Scanner'
-import {getUserInfoFromQrCodeValue} from '../api'
+import {getUserInfoFromQrCodeValue, giveTip} from '../api'
 
 const MAX_CHARACTERS = 140
 
@@ -16,20 +16,20 @@ class Tip extends Component {
     super(props)
 
     this.state = {
-      qrCodeValue: null,
-      tipValue: 5,
-      feedback: '',
+      recipientGuid: null,
+      amount: 5,
+      message: '',
       confirmDialogOpen: false,
     }
   }
 
-  handleQrCode = async (qrCodeValue) => {
-    const user = await getUserInfoFromQrCodeValue(qrCodeValue)
-    this.setState({qrCodeValue, user})
+  handleQrCode = async (recipientGuid) => {
+    const user = await getUserInfoFromQrCodeValue(recipientGuid)
+    this.setState({recipientGuid, user})
   }
 
   handleSliderChange = (event, value) => {
-    this.setState({tipValue: value})
+    this.setState({amount: value})
   }
 
   handleFeedbackChange = (event, value) => {
@@ -37,7 +37,7 @@ class Tip extends Component {
       if (value.length >= MAX_CHARACTERS) {
         return
       }
-      return {feedback: value}
+      return {message: value}
     })
   }
 
@@ -49,6 +49,11 @@ class Tip extends Component {
   handleConfirmDialog = event => {
     event.preventDefault()
     this.setState({confirmDialogOpen: false}, () => {
+      giveTip({
+        recipientGuid: this.state.recipientGuid,
+        amount: this.state.amount,
+        message: this.state.message,
+      })
       alert(JSON.stringify(this.state, null, 4))
     })
   }
@@ -59,7 +64,7 @@ class Tip extends Component {
   }
 
   render () {
-    if (!this.state.qrCodeValue) {
+    if (!this.state.recipientGuid) {
       return <Scanner onSuccessfulScan={this.handleQrCode} />
     }
     return (
@@ -68,22 +73,22 @@ class Tip extends Component {
 
         <Content>
           Tip value:<br />
-          <TextField readOnly value={this.state.tipValue} />
+          <TextField readOnly value={this.state.amount} />
           <Slider
             min={1}
             max={40}
             step={1}
             onChange={this.handleSliderChange}
-            value={this.state.tipValue}
+            value={this.state.amount}
           />
           <TextField
             fullWidth
-            hintText="Leave feedback"
+            hintText="Leave a message"
             multiLine
             rows={2}
             rowsMax={4}
             onChange={this.handleFeedbackChange}
-            value={this.state.feedback}
+            value={this.state.message}
           />
         </Content>
 
