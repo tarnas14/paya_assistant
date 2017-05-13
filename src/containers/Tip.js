@@ -10,6 +10,7 @@ import Scanner from '../components/Scanner'
 import {getUserInfoFromQrCodeValue, giveTip} from '../api'
 import {Redirect, Link} from 'react-router-dom'
 import Loading from '../components/Loading'
+import Paper from 'material-ui/Paper';
 
 const initialState = {
   recipientGuid: null,
@@ -104,15 +105,17 @@ class Tip extends Component {
     if (this.state.successFulTip) {
       return (
         <Content>
-          <p>"My favorite things in life don't cost any money. It's really clear that the most precious resource we all have is time." ~Steve Jobs</p>
-          <br />
-          <p>Thanks for the tip!</p>
-          <br />
-          <FlatButton
-            label="Go back"
-            primary={true}
-            onTouchTap={() => this.setState({isRedirecting: true})}
-          />
+          <Paper>
+            <Content>
+              <p>Thanks for the tip!</p>
+              <blockquote><p>"My favorite things in life don't cost any money. It's really clear that the most precious resource we all have is time."</p><p style={{textAlign: 'text-right'}}>~Steve Jobs</p></blockquote>
+              <FlatButton
+                label="Go back"
+                primary={true}
+                onTouchTap={() => this.setState({isRedirecting: true})}
+              />
+            </Content>
+          </Paper>
         </Content>
       )
     }
