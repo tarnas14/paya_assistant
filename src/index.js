@@ -58,10 +58,10 @@ MatchWhenAuthorized.propTypes = {
   authed: PropTypes.bool.isRequired
 }
 
-const MyCode = (currentUser) => () => <App user={currentUser}><MyQRCode/></App>
-const TipHistory = (currentUser) => () => <App user={currentUser}><TipHistoryContainer /></App>
-const Stats = (currentUser) =>  () => <App user={currentUser}><Content>Stats</Content></App>
-const MyAccount =  (currentUser) => () => <App user={currentUser}><Content>MyAccount</Content></App>
+const MyCode = currentUser => () => <App user={currentUser}><MyQRCode/></App>
+const TipHistory = currentUser => () => <App user={currentUser}><TipHistoryContainer currentUser={currentUser}/></App>
+const Stats = currentUser =>  () => <App user={currentUser}><Content>Stats</Content></App>
+const MyAccount =  currentUser => () => <App user={currentUser}><Content>MyAccount</Content></App>
 
 class AppWrapper extends React.Component {
   constructor() {

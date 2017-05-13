@@ -13,15 +13,7 @@ const getUserInfoFromQrCodeValue = async (qrCodeValue) => {
 
 const getBasicUserInfo = async () => {
   // get /profile
-  return {
-    description: 'I\'m eating pizza',
-    email: 'jerry@tomAndJerry.com',
-    guid: 'd4a027f1-809b-4cb7-890f-dc29aa077c3f',
-    hasIncomingAccount: true,
-    hasOutgoingAccount: true,
-    iconColor: '#030',
-    name: 'Jerry',
-  }
+  return fetch(`${apiEndpoint}/profile?token=${auth.token()}`).then(response => response.json())
 }
 
 const getProfileStats = async () => {

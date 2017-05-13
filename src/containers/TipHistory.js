@@ -21,9 +21,7 @@ export default class TipHistory extends Component {
     const tipsFromApi = await getHistory()
 
     const magic = tips => reverse(sortBy(tips.map(tip => ({
-      recipientName: tip.recipientName, 
-      recipientColor: tip.recipientColor,
-      amount: tip.amount,
+      ...tip,
       date: tip.date.date
     })), ['date']))
 
@@ -33,13 +31,26 @@ export default class TipHistory extends Component {
     }})
   }
 
-  displayTip = tip => {
+  displayReceived = tip => {
+    return  <Content key={tip.date}>
+      <p style={{position: 'absolute', right: '5%', fontWeight: 'bold', fontSize: '1.1em'}}>{(tip.amount/100).toFixed(2)} PLN</p>
+      <Card>
+      <CardHeader
+        avatar={<Avatar backgroundColor={this.props.currentUser.iconColor} />}
+        title={this.props.currentUser.name}
+        subtitle={tip.message}
+      />
+    </Card></Content>
+  }
+
+  displayGiven = tip => {
     return  <Content key={tip.date}>
       <p style={{position: 'absolute', right: '5%', fontWeight: 'bold', fontSize: '1.1em'}}>{(tip.amount/100).toFixed(2)} PLN</p>
       <Card>
       <CardHeader
         avatar={<Avatar backgroundColor={tip.recipientColor} />}
         title={tip.recipientName || 'anonymous'}
+        subtitle={tip.message}
       />
     </Card></Content>
   }
@@ -54,11 +65,11 @@ export default class TipHistory extends Component {
     return <Tabs>
       <Tab label="Received tips">
         {!Boolean(tipsHistory.received.length) && <CenteredContent><p>You haven't received any tips yet</p></CenteredContent>}
-        {Boolean(tipsHistory.received.length) && tipsHistory.received.map(this.displayTip)}
+        {Boolean(tipsHistory.received.length) && tipsHistory.received.map(this.displayReceived)}
       </Tab>
       <Tab label="Given tips">
         {!Boolean(tipsHistory.given.length) && <CenteredContent><p>You haven't given any tips yet</p></CenteredContent>}
-        {Boolean(tipsHistory.given.length) && tipsHistory.given.map(this.displayTip)}
+        {Boolean(tipsHistory.given.length) && tipsHistory.given.map(this.displayGiven)}
       </Tab>
     </Tabs>
   }
