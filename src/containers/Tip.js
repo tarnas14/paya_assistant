@@ -60,8 +60,6 @@ class Tip extends Component {
     })
 
     this.setState({successFulTip: true})
-
-    this.setState(initialState)
   }
 
   handleCancelDialog = event => {
