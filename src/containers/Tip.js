@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Content from '../components/Content'
 import Scanner from '../components/Scanner'
 import {getUserInfoFromQrCodeValue, giveTip} from '../api'
-import {Link} from 'react-router-dom'
+import {Redirect, Link} from 'react-router-dom'
 import Loading from '../components/Loading'
 
 const initialState = {
@@ -16,6 +16,7 @@ const initialState = {
   amount: 5,
   message: '',
   confirmDialogOpen: false,
+  isRedirecting: false,
 }
 
 const MAX_CHARACTERS = 140
@@ -63,7 +64,7 @@ class Tip extends Component {
     if (response.error) {
       alert('Error occured during giving a tip')
 
-      window.location = '/'
+      this.setState({isRedirecting: true})
 
       return
     }
@@ -88,6 +89,12 @@ class Tip extends Component {
       </div>
     }
 
+    if (this.state.isRedirecting) {
+      return (
+        <Redirect to={'/'} />
+      )
+    }
+
     if (this.state.successFulTip) {
       return (
         <Content>
@@ -98,7 +105,7 @@ class Tip extends Component {
           <FlatButton
             label="Go back"
             primary={true}
-            onTouchTap={() => window.location = '/'}
+            onTouchTap={() => this.setState({isRedirecting: true})}
           />
         </Content>
       )

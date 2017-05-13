@@ -33,26 +33,35 @@ export default class TipHistory extends Component {
 
   displayReceived = tip => {
     return  <Content key={`${tip.date}${tip.amount}`}>
-      <p style={{position: 'absolute', right: '5%', fontWeight: 'bold', fontSize: '1.1em'}}>{(tip.amount/100).toFixed(2)} PLN</p>
       <Card>
-      <CardHeader
-        avatar={<Avatar backgroundColor={this.props.currentUser.iconColor} />}
-        title={tip.date.toLocaleDateString()}
-        subtitle={tip.message}
-      />
-    </Card></Content>
+        <CardHeader
+          avatar={<Avatar backgroundColor={this.props.currentUser.iconColor} />}
+          title={tip.date.toLocaleDateString()}
+          subtitle={tip.message}
+        >
+          <p style={{position: 'absolute', right: '5%', top:'15%'}}>
+            <Money val={tip.amount} />
+          </p>
+        </CardHeader>
+      </Card>
+    </Content>
   }
 
   displayGiven = tip => {
     return  <Content key={`${tip.date}${tip.amount}`}>
-      <p style={{position: 'absolute', right: '5%', fontWeight: 'bold', fontSize: '1.1em'}}><Money val={tip.amount}/></p>
+
       <Card>
-      <CardHeader
-        avatar={<Avatar backgroundColor={tip.recipientColor} />}
-        title={tip.recipientName || 'anonymous'}
-        subtitle={tip.message}
-      />
-    </Card></Content>
+        <CardHeader
+          avatar={<Avatar backgroundColor={tip.recipientColor} />}
+          title={tip.recipientName || 'anonymous'}
+          subtitle={tip.message}
+        >
+          <p style={{position: 'absolute', right: '5%', top:'15%'}}>
+            <Money val={tip.amount}/>
+          </p>
+        </CardHeader>
+      </Card>
+    </Content>
   }
 
   render () {
