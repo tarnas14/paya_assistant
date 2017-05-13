@@ -22,8 +22,8 @@ export default class Stats extends Component {
   async componentDidMount () {
     const tipsFromStats = await getProfileStats()
 
-    const received = number => `You have been tipped by ${number} ${number === 1 ? 'person' : 'people'}`
-    const given = number => `You have tipped ${number} ${number === 1 ? 'person' : 'people'}`
+    const received = number => `You have been tipped ${number} ${number === 1 ? 'time' : 'times'}`
+    const given = number => `You have tipped ${number} ${number === 1 ? 'time' : 'times'}`
 
     this.setState({stats: {
       given: tipsFromStats.given.map(s => ({...s, date: new Date(s.date.date), subtitle: given(s.numberOfGiven)})),
