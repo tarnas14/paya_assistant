@@ -1,10 +1,8 @@
 import React, {Component} from 'react'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import {getHistory} from '../api'
-import {CardText, Card, CardHeader} from 'material-ui/Card'
+import {Card, CardHeader} from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar'
-import sortBy from 'lodash/sortBy'
-import reverse from 'lodash/reverse'
 import CenteredContent from '../components/Content'
 import Money from '../components/Money'
 
@@ -21,10 +19,10 @@ export default class TipHistory extends Component {
   async componentDidMount () {
     const tipsFromApi = await getHistory()
 
-    const magic = tips => reverse(sortBy(tips.map(tip => ({
+    const magic = tips => tips.map(tip => ({
       ...tip,
-      date: tip.date.date
-    })), ['date']))
+      date: new Date(tip.date.date)
+    }))
 
     this.setState({tipsHistory: {
       given: magic(tipsFromApi.given),
@@ -38,7 +36,7 @@ export default class TipHistory extends Component {
       <Card>
       <CardHeader
         avatar={<Avatar backgroundColor={this.props.currentUser.iconColor} />}
-        title={this.props.currentUser.name}
+        title={tip.date.toLocaleDateString()}
         subtitle={tip.message}
       />
     </Card></Content>
