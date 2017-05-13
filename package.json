@@ -5,6 +5,7 @@
   "dependencies": {
     "material-ui": "^0.18.0",
     "qrcode.react": "^0.7.1",
+    "qs": "^6.4.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-qr-reader": "^1.1.0",

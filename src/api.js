@@ -1,3 +1,4 @@
+import qs from 'qs'
 import auth from './auth'
 
 const apiEndpoint = process.env.REACT_APP_API
@@ -24,11 +25,20 @@ const giveTip = ({recipientGuid, amount, message}) => {
   // post /tips
   const tipPayload = {
     recipient_guid: recipientGuid,
-    amount,
+    amount: amount * 100,
     message,
   }
 
-  console.log('tip payload', tipPayload)
+  return fetch(
+    `${apiEndpoint}/tips?token=${auth.token()}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: qs.stringify(tipPayload)
+    }
+  ).then(response => response.json()).catch(error => alert(error))
 }
 
 export {

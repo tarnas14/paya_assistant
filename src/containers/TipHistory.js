@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import {getHistory} from '../api'
-import {CardText, Card, CardHeader} from 'material-ui/Card'
+import {Card, CardHeader} from 'material-ui/Card'
 import Avatar from 'material-ui/Avatar'
 import sortBy from 'lodash/sortBy'
 import reverse from 'lodash/reverse'
