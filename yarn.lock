@@ -2515,9 +2515,13 @@ hyphenate-style-name@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/hyphenate-style-name/-/hyphenate-style-name-1.0.2.tgz#31160a36930adaf1fc04c6074f7eb41465d4ec4b"
 
-iconv-lite@0.4.13, iconv-lite@~0.4.13:
+iconv-lite@0.4.13:
   version "0.4.13"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.13.tgz#1f88aba4ab0b1508e8312acc39345f36e992e2f2"
+
+iconv-lite@~0.4.13:
+  version "0.4.17"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.17.tgz#4fdaa3b38acbc2c031b045d0edcdfe1ecab18c8d"
 
 icss-replace-symbols@^1.0.2:
   version "1.0.2"
@@ -4205,8 +4209,8 @@ promise@7.1.1, promise@^7.1.1:
     asap "~2.0.3"
 
 prop-types@^15.5.4, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@~15.5.7:
-  version "15.5.9"
-  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.9.tgz#d478eef0e761396942f70c78e772f76e8be747c9"
+  version "15.5.10"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
     fbjs "^0.8.9"
     loose-envify "^1.3.1"
@@ -4345,8 +4349,8 @@ react-event-listener@^0.4.5:
     warning "^3.0.0"
 
 react-qr-reader@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/react-qr-reader/-/react-qr-reader-1.1.0.tgz#7d2a44fe1af6df03b09e592bb41d8826b860a33c"
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-qr-reader/-/react-qr-reader-1.1.1.tgz#aa2666f2e4786425ddb1b1191b257c12b453a4be"
   dependencies:
     jsqr "^0.2.2"
     prop-types "^15.5.8"
@@ -4501,9 +4505,9 @@ rechoir@^0.6.2:
   dependencies:
     resolve "^1.1.6"
 
-recompose@^0.23.0:
-  version "0.23.3"
-  resolved "https://registry.yarnpkg.com/recompose/-/recompose-0.23.3.tgz#0ce96c3242d2af4d849a9cbceb28d62edeb12d05"
+recompose@^0.23.0, recompose@^0.23.4:
+  version "0.23.4"
+  resolved "https://registry.yarnpkg.com/recompose/-/recompose-0.23.4.tgz#af09e4e08424effa449c9b793037166f7b30644a"
   dependencies:
     change-emitter "^0.1.2"
     fbjs "^0.8.1"
