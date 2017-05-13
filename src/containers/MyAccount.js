@@ -25,7 +25,7 @@ export default class MyAccount extends Component {
 
     return <div style={{maxWidth: '60%', margin: '0 auto'}}><Content>
       <User user={currentUser} displayEmail>
-        {accounts.length && <CardText>
+        <CardText>
           {accounts.map(account => <Card key={account.account.iban} style={{testAlign: 'right'}}>
               <CardHeader
                 title={account.account.name}
@@ -48,7 +48,7 @@ export default class MyAccount extends Component {
               </CardActions>
             </Card>
           )}
-        </CardText>}
+        </CardText>
       </User>
     </Content></div>
   }

@@ -125,7 +125,7 @@ class AppWrapper extends React.Component {
       <Switch>
         <Route exact path="/login" render={(props) => <Login {...props}/>}/>
         <MatchWhenAuthorized exact path="/" authed={loggedIn} component={MyCode(currentUser)}/>
-        <MatchWhenAuthorized exact path="/tip" authed={loggedIn} component={() => <App user={currentUser}><Tip/></App>}/>
+        <MatchWhenAuthorized exact path="/tip" authed={loggedIn} component={() => <App user={currentUser}><Tip currentUser={currentUser}/></App>}/>
         <MatchWhenAuthorized exact path="/tiphistory" authed={loggedIn} component={TipHistory(currentUser)}/>
         <MatchWhenAuthorized exact path="/stats" authed={loggedIn} component={Stats(currentUser)}/>
         <MatchWhenAuthorized exact path="/myaccount" authed={loggedIn} component={MyAccount(currentUser, this.setIncomingAccount.bind(this), this.setOutgoingAccount.bind(this))}/>

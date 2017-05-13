@@ -8,6 +8,8 @@ import FlatButton from 'material-ui/FlatButton'
 import Content from '../components/Content'
 import Scanner from '../components/Scanner'
 import {getUserInfoFromQrCodeValue, giveTip} from '../api'
+import {Link} from 'react-router-dom'
+import Loading from '../components/Loading'
 
 const initialState = {
   recipientGuid: null,
@@ -75,6 +77,17 @@ class Tip extends Component {
   }
 
   render () {
+    if (!this.props.currentUser) {
+      return <Loading />
+    }
+
+    if (!this.props.currentUser.hasOutgoingAccount) {
+      return <div>
+        <p>To tip you have to first set up an outgoing account</p>
+        <Link to={'/myAccount'}><RaisedButton primary label="Your account settings"></RaisedButton></Link>
+      </div>
+    }
+
     if (this.state.successFulTip) {
       return (
         <Content>
@@ -90,9 +103,11 @@ class Tip extends Component {
         </Content>
       )
     }
+
     if (!this.state.recipientGuid) {
       return <Scanner onSuccessfulScan={this.handleQrCode} />
     }
+
     return (
       <Content>
         <User user={this.state.user}/>

@@ -5,7 +5,7 @@ import {Card, CardHeader} from 'material-ui/Card'
 import CenteredContent from '../components/Content'
 import Money from '../components/Money'
 import Loyalty from 'material-ui/svg-icons/action/loyalty'
-import RefreshIndicator from 'material-ui/RefreshIndicator';
+import Loading from '../components/Loading'
 
 const Content = ({children}) => <div style={{margin: '20px', padding: '20px', position: 'relative'}}>{children}</div>
 
@@ -47,16 +47,7 @@ export default class Stats extends Component {
     const {stats} = this.state
 
     if (!stats) {
-      return <RefreshIndicator
-        size={40}
-        left={0}
-        top={40}
-        status="loading"
-        style={{
-          display: 'inline-block',
-          position: 'relative',
-        }}
-      />
+      return <Loading/> 
     }
 
     return <Tabs>
