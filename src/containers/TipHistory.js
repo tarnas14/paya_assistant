@@ -6,6 +6,7 @@ import Avatar from 'material-ui/Avatar'
 import sortBy from 'lodash/sortBy'
 import reverse from 'lodash/reverse'
 import CenteredContent from '../components/Content'
+import Money from '../components/Money'
 
 const Content = ({children}) => <div style={{margin: '20px', padding: '20px', position: 'relative'}}>{children}</div>
 
@@ -35,7 +36,7 @@ export default class TipHistory extends Component {
 
   displayTip = tip => {
     return  <Content key={tip.date}>
-      <p style={{position: 'absolute', right: '5%', fontWeight: 'bold', fontSize: '1.1em'}}>{(tip.amount/100).toFixed(2)} PLN</p>
+      <p style={{position: 'absolute', right: '5%', fontWeight: 'bold', fontSize: '1.1em'}}><Money val={tip.amount}/></p>
       <Card>
       <CardHeader
         avatar={<Avatar backgroundColor={tip.recipientColor} />}
