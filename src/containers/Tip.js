@@ -130,8 +130,7 @@ class Tip extends Component {
         <User user={this.state.user}/>
 
         <Content>
-          Tip value:<br />
-          <TextField readOnly value={this.state.amount} />
+          <TextField floatingLabelText="Tip value" readOnly value={this.state.amount} inputStyle={{fontSize: '2em', textAlign: 'center'}} />
           <Slider
             min={1}
             max={40}
