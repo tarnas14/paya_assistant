@@ -9,18 +9,20 @@ import Content from '../components/Content'
 import Scanner from '../components/Scanner'
 import {getUserInfoFromQrCodeValue, giveTip} from '../api'
 
+const initialState = {
+  recipientGuid: null,
+  amount: 5,
+  message: '',
+  confirmDialogOpen: false,
+}
+
 const MAX_CHARACTERS = 140
 
 class Tip extends Component {
   constructor (props) {
     super(props)
 
-    this.state = {
-      recipientGuid: null,
-      amount: 5,
-      message: '',
-      confirmDialogOpen: false,
-    }
+    this.state = initialState
   }
 
   handleQrCode = async (recipientGuid) => {
@@ -46,16 +48,20 @@ class Tip extends Component {
     this.setState({confirmDialogOpen: true})
   }
 
-  handleConfirmDialog = event => {
+  handleConfirmDialog = async event => {
     event.preventDefault()
-    this.setState({confirmDialogOpen: false}, async () => {
-      await giveTip({
-        recipientGuid: this.state.recipientGuid,
-        amount: this.state.amount,
-        message: this.state.message,
-      })
-      console.log(JSON.stringify(this.state, null, 4))
+    console.log(JSON.stringify(this.state, null, 4))
+    await giveTip({
+      recipientGuid: this.state.recipientGuid,
+      amount: this.state.amount,
+      message: this.state.message,
+    }, () => {
+      alert('Some kind of error')
     })
+
+    this.setState({successFulTip: true})
+
+    this.setState(initialState)
   }
 
   handleCancelDialog = event => {
@@ -64,6 +70,21 @@ class Tip extends Component {
   }
 
   render () {
+    if (this.state.successFulTip) {
+      return (
+        <Content>
+          <p>"My favorite things in life don't cost any money. It's really clear that the most precious resource we all have is time." ~Steve Jobs</p>
+          <br />
+          <p>Thanks for the tip!</p>
+          <br />
+          <FlatButton
+            label="Go back"
+            primary={true}
+            onTouchTap={() => window.location = '/'}
+          />
+        </Content>
+      )
+    }
     if (!this.state.recipientGuid) {
       return <Scanner onSuccessfulScan={this.handleQrCode} />
     }
