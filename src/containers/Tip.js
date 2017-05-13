@@ -48,13 +48,13 @@ class Tip extends Component {
 
   handleConfirmDialog = event => {
     event.preventDefault()
-    this.setState({confirmDialogOpen: false}, () => {
-      giveTip({
+    this.setState({confirmDialogOpen: false}, async () => {
+      await giveTip({
         recipientGuid: this.state.recipientGuid,
         amount: this.state.amount,
         message: this.state.message,
       })
-      alert(JSON.stringify(this.state, null, 4))
+      console.log(JSON.stringify(this.state, null, 4))
     })
   }
 

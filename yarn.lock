@@ -4253,7 +4253,7 @@ qrcode.react@^0.7.1:
     prop-types "^15.5.8"
     qr.js "0.0.0"
 
-qs@6.4.0, qs@~6.4.0:
+qs@6.4.0, qs@^6.4.0, qs@~6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.4.0.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
 

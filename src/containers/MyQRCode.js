@@ -6,7 +6,7 @@ class MyQRCode extends Component {
   render () {
     return (
       <Content>
-        <QRDisplay value="some-test-value-123" />
+        <QRDisplay value="591671ac724e86.75366481" />
       </Content>
     )
   }
