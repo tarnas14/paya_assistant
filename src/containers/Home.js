@@ -147,7 +147,7 @@ const speech = async (settings, speaking = () => {}, listening = () => {}, notLi
         const confidence = event.results[0][0].confidence
         callbacks.result(hit, confidence)
 
-        const command = commands.find(c => c.waitFor === hit)
+        const command = commands.find(c => c.waitFor.toLowerCase() === hit.toLowerCase())
         if (!command) {
           bounce()
           await say(`Nie rozpoznałam komendy.`)
@@ -208,9 +208,17 @@ export default class extends Component {
   async next () {
     const s = await this.state.speech
     const command = await s.waitForCommand([
-      { waitFor: 'płatności', command: this.payments.bind(this) }
+      { waitFor: 'płatności', command: this.payments.bind(this) },
+      { waitFor: 'jaki jest sens życia', command: this.meaningOfLife.bind(this)}
     ])
     await command()
+  }
+
+  async meaningOfLife () {
+    const s = await this.state.speech
+    await s.say('Jeśli już koniecznie chcesz wiedzieć.')
+    await s.say('42')
+    await s.say('Nie ma za co ;)')
   }
 
   listening = l => this.setState({opacity: l ? 1 : 0.7})
@@ -267,6 +275,7 @@ export default class extends Component {
         ])
         await command()
       }
+      await s.say('To była ostatnia płatność na liście')
       await s.say(`Uregulowane płatności: ${payments.length - skipped}`)
       await s.say(`Płatności pominięte: ${skipped}`)
       await s.say(`To by było na tyle, ${this.props.user.name}`)
@@ -277,9 +286,10 @@ export default class extends Component {
   }
 
   render () {
-    const hal = true
+    const hal = process.env.REACT_APP_HAL
+    const assistent = hal ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/HAL9000.svg/220px-HAL9000.svg.png' : assistentImage
     const {opacity, listening, currentPayment, showProgressIndicator, success, speaking} = this.state
-    return <div className='Home'>
+    return <div className='Home' style={{backgroundImage: `url(${assistent})`}}>
       <Card>
         {!currentPayment && speaking && <CardTitle title={speaking}/>}
         {currentPayment && <CardTitle
@@ -290,8 +300,6 @@ export default class extends Component {
         {currentPayment && success && <CardText><span style={{color: cyan300, fontSize: '2em'}}>Załatwione!</span></CardText>}
       </Card>
       {listening && <LinearProgress mode="indeterminate"/>}
-      { !hal && <img src={assistentImage} className={`assistentImage ${currentPayment && 'payment'}`}/>}
-      { hal && <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/HAL9000.svg/220px-HAL9000.svg.png" style={{opacity}}/>}
     </div>
   }
 }

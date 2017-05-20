@@ -6,6 +6,8 @@
   max-height: 100%;
   max-width: 60%;
   margin: 0 auto;
+  background-position: center center;
+  background-repeat: no-repeat;
 }
 
 .Home img {
