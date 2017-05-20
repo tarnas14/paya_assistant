@@ -1,0 +1,22 @@
+.Home {
+  position: relative;
+  padding-top: 2em;
+  min-width: 360px;
+  min-height: 480px;
+  max-height: 100%;
+  max-width: 50%;
+  margin: 0 auto;
+}
+.assistentImage {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+.flip {
+  -moz-transform: scaleX(-1);
+  -o-transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+  filter: FlipH;
+  -ms-filter: "FlipH";
+}

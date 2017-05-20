@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {getPendingPayments} from '../api'
+import assistentImage from '../images/paya.png'
+import './Home.css'
 
 const defaultCommand = process.env.REACT_APP_SKIP_COMMANDS ? 0 : -1
 const speak = !Boolean(process.env.REACT_APP_SKIP_SPEECH)
@@ -245,9 +247,11 @@ export default class extends Component {
   }
 
   render () {
+    const hal = false
     const {opacity} = this.state
-    return <div style={{paddingTop: '2em'}}>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/HAL9000.svg/220px-HAL9000.svg.png" style={{opacity}}/>
+    return <div className='Home'>
+      <img src={assistentImage} className='assistentImage'/>
+      { hal && <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/HAL9000.svg/220px-HAL9000.svg.png" style={{opacity}}/>}
     </div>
   }
 }
