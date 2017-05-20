@@ -80,6 +80,14 @@ const setOutgoingAccount = async ({accountId, bankId, iban}) => {
   return {}
 }
 
+const getPendingPayments = async () => {
+  return [{
+    name: 'PLAY', amount: '50'
+  }, {
+    name: 'czynsz', amount: '850.23'
+  }]
+}
+
 export {
   getUserInfoFromQrCodeValue,
   getBasicUserInfo,
@@ -89,4 +97,6 @@ export {
   getProfileAccounts,
   setIncomingAccount,
   setOutgoingAccount,
+  
+  getPendingPayments
 }
