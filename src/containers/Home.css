@@ -8,6 +8,10 @@
   margin: 0 auto;
 }
 
+.Home img {
+  margin-top: 2em
+}
+
 .Home p {
   position:relative;
   z-index: 999;

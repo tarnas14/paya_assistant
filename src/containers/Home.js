@@ -6,6 +6,8 @@ import Paper from 'material-ui/Paper'
 import Loading from '../components/Loading'
 import {cyan300} from 'material-ui/styles/colors'
 import logo from '../images/logo.png'
+import {CardText, CardTitle, CardHeader, Card} from 'material-ui/Card'
+import LinearProgress from 'material-ui/LinearProgress'
 
 const defaultCommand = process.env.REACT_APP_SKIP_COMMANDS ? 0 : -1
 const speak = !Boolean(process.env.REACT_APP_SKIP_SPEECH)
@@ -14,7 +16,9 @@ const wait = async (delay = 100) => new Promise(resolve => {
   window.setTimeout(() => resolve(), delay)
 })
 
-const speech = async (settings) => {
+const nullStarted = {started: () => {}}
+
+const speech = async (settings, speaking = () => {}, listening = () => {}, notListening = () => {}) => {
   const synthesis = window.speechSynthesis
 
   const voice = await new Promise(resolve => {
@@ -33,7 +37,7 @@ const speech = async (settings) => {
 
   const say = async (text, c) => {
     const callbacks = {
-      started: () => console.log('speaking', text),
+      started: () => speaking(text) || console.log('speaking', text),
       finished: () => {},//console.log('stopped speaking', text),
       onerror: e => console.log('error', e),
       ...c
@@ -69,8 +73,8 @@ const speech = async (settings) => {
 
   const waitForCommand = async (commands, cbs) => {
     const callbacks = {
-      started: () => {},//console.log('waiting for command'),
-      finished: () => {},//console.log('stopped waiting'),
+      started: () => listening(),// || console.log('waiting for command'),
+      finished: () => notListening(),//console.log('stopped waiting'),
       result: (h, c) => console.log(h, c),
       error: (e) => console.log('error', e),
       ...cbs
@@ -134,6 +138,7 @@ const speech = async (settings) => {
           return
         }
         callbacks.error(e)
+        callbacks.finished()
         reject('error', e)
       }
 
@@ -154,6 +159,7 @@ const speech = async (settings) => {
         }
 
         recognition.stop()
+        callbacks.finished()
         resolve(command.command)
       }
 
@@ -178,7 +184,12 @@ export default class extends Component {
   constructor () {
     super()
     this.state = {
-      speech: speech(settings)
+      speech: speech(
+        settings,
+        text => this.setState({speaking: text}),
+        () => this.setState({listening: true}),
+        () => this.setState({listening: false}),
+      )
     }
   }
 
@@ -190,8 +201,8 @@ export default class extends Component {
 
   async greet (user) {
     const s = await this.state.speech
-    await s.say(`witaj, ${user.name}`, {started: () => console.log('speaking'), finished: () => console.log('stopped speaking')})
-    await s.say('w czym moge Ci pomóc?', {started: () => console.log('speaking'), finished: () => console.log('stopped speaking')}) 
+    await s.say(`Witaj, ${user.name}`, {finished: () => console.log('stopped speaking')})
+    await s.say('W czym moge Ci pomóc?', {finished: () => console.log('stopped speaking')}) 
   }
 
   async next () {
@@ -207,7 +218,7 @@ export default class extends Component {
   // setPayment = () => {}
   setPayment = payment => this.setState({currentPayment: payment})
   // clearPayment = () => {}
-  clearPayment = () => this.setState({currentPayment: undefined, showProgressIndicator: false, success: false})
+  clearPayment = () => this.setState({speaking: '', currentPayment: undefined, showProgressIndicator: false, success: false})
   progress = () => this.setState({showProgressIndicator: true})
   success = () => this.setState({showProgressIndicator: false, success: true})
 
@@ -235,13 +246,13 @@ export default class extends Component {
             waitFor: 'zapłać',
             command: async () => {
               this.progress()
-              await s.say(`opłacam. ${payment.name}`)
+              await s.say(`Opłacam ${payment.name}`)
               await wait(800)
-              await s.say('chwilka')
+              await s.say('Chwilka')
               await wait(800)
               this.success()
-              await s.say('załatwione')
-              await wait(500)
+              await s.say('Załatwione')
+              await wait(800)
               this.clearPayment()
             }
           },
@@ -249,7 +260,7 @@ export default class extends Component {
             waitFor: 'dalej',
             command: async () => {
               skipped++
-              await s.say(`pomijam. ${payment.name}`)
+              await s.say(`Pomijam ${payment.name}`, nullStarted)
               this.clearPayment()
             }
           },
@@ -266,17 +277,20 @@ export default class extends Component {
   }
 
   render () {
-    const hal = false
-    const {opacity, currentPayment, showProgressIndicator, success} = this.state
+    const hal = true
+    const {opacity, listening, currentPayment, showProgressIndicator, success, speaking} = this.state
     return <div className='Home'>
-      <img src={assistentImage} className='assistentImage'/>
-      {currentPayment && <div style={{position: 'absolute', top: '57%', right: '47%'}}>
-        <Paper circle={true} style={{padding: '7%', position: 'relative'}}>
-          {success && <p style={{color: cyan300, fontSize: '2.3em'}}>Załatwione!<br/></p>}
-          {!success && <p>{currentPayment.name} <b>{currentPayment.amount.toFixed(2)}zł</b>{showProgressIndicator && <span className='progressIndicatorContainer'><Loading top={20}/></span>}</p>}
-          <div className='triangle'/>
-        </Paper>
-      </div>}
+      <Card>
+        {!currentPayment && speaking && <CardTitle title={speaking}/>}
+        {currentPayment && <CardTitle
+          subtitle={currentPayment.name}
+          title={`${currentPayment.amount}zł`}
+        />}
+        {currentPayment && showProgressIndicator && <CardText><Loading top={-15}/></CardText>}
+        {currentPayment && success && <CardText><span style={{color: cyan300, fontSize: '2em'}}>Załatwione!</span></CardText>}
+      </Card>
+      {listening && <LinearProgress mode="indeterminate"/>}
+      { !hal && <img src={assistentImage} className={`assistentImage ${currentPayment && 'payment'}`}/>}
       { hal && <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/HAL9000.svg/220px-HAL9000.svg.png" style={{opacity}}/>}
     </div>
   }
