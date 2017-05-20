@@ -46,7 +46,7 @@ class App extends Component {
           onRequestChange={open => this.setState({isDrawerOpen: open})}
           open={this.state.isDrawerOpen}
         >
-          <User user={this.props.user}/>
+          <User displayEmail user={this.props.user}/>
           <MenuItem
             leftIcon={<EuroSymbol/>}
             style={{textAlign: 'left'}}

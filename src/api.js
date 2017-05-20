@@ -1,5 +1,23 @@
 import qs from 'qs'
+import auth from './auth'
+
 const apiEndpoint = process.env.REACT_APP_API
+const authorizedFetch = async (endpoint, options) => {
+  const response = await fetch(
+    endpoint,
+    {
+      headers: {
+        'X-Authorization': auth.token()
+      },
+      ...options
+    }
+  )
+  if (response.status < 200 || response.status >= 300) {
+    return {error: response.statusText} 
+  }
+
+  return response.json()
+}
 
 const getUserInfoFromQrCodeValue = async (qrCodeValue) => {
   return Promise.resolve({
@@ -11,12 +29,14 @@ const getUserInfoFromQrCodeValue = async (qrCodeValue) => {
 }
 
 const getBasicUserInfo = async () => {
-  return Promise.resolve({
-    name: 'John Smith',
-    email: 'john@smith.com',
-    description: 'One and the same',
-    iconColor: 'orange'
-  })
+  if (!apiEndpoint) {
+    return {
+      name: 'John Smith',
+      email: 'john@smith.com',
+    }
+  }
+  
+  return await authorizedFetch(`${apiEndpoint}/profile`)
 }
 
 const getProfileStats = async () => {
