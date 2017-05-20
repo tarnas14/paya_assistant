@@ -104,7 +104,16 @@ const speech = async (settings) => {
         return
       }
       await say('Dostępne komendy to.')
-      await say(commands.map(c => c.waitFor).join('.'))
+      const availableCommands = commands.map(c => c.waitFor)
+      for(let i = 0; i < availableCommands.length; ++i) {
+        const availableCommand = availableCommands[i]
+        await say(availableCommand)
+        if (i + 2 === availableCommands.length) {
+          await say('oraz') 
+        } else {
+          await wait(200)
+        }
+      }
       await say('Spróbuj jeszcze raz.')
     }
 
@@ -117,7 +126,6 @@ const speech = async (settings) => {
         if (e.error === 'no-speech') {
           bounce()
           await say('Nie dosłyszałam. Sprawdź czy masz włączony mikrofon.')
-          await listCommands()
           recognition.stop()
           recognition.start()
           return

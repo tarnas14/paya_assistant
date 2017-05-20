@@ -22,7 +22,7 @@ const authorizedFetch = async (endpoint, options) => {
 const getBasicUserInfo = async () => {
   if (!apiEndpoint) {
     return {
-      name: 'John Smith',
+      name: 'tar nas',
       email: 'john@smith.com',
     }
   }
