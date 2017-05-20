@@ -3,6 +3,9 @@ import {getPendingPayments} from '../api'
 import assistentImage from '../images/paya.png'
 import './Home.css'
 import Paper from 'material-ui/Paper'
+import Loading from '../components/Loading'
+import {cyan300} from 'material-ui/styles/colors'
+import logo from '../images/logo.png'
 
 const defaultCommand = process.env.REACT_APP_SKIP_COMMANDS ? 0 : -1
 const speak = !Boolean(process.env.REACT_APP_SKIP_SPEECH)
@@ -31,7 +34,7 @@ const speech = async (settings) => {
   const say = async (text, c) => {
     const callbacks = {
       started: () => console.log('speaking', text),
-      finished: () => console.log('stopped speaking', text),
+      finished: () => {},//console.log('stopped speaking', text),
       onerror: e => console.log('error', e),
       ...c
     }
@@ -66,8 +69,8 @@ const speech = async (settings) => {
 
   const waitForCommand = async (commands, cbs) => {
     const callbacks = {
-      started: () => console.log('waiting for command'),
-      finished: () => console.log('stopped waiting'),
+      started: () => {},//console.log('waiting for command'),
+      finished: () => {},//console.log('stopped waiting'),
       result: (h, c) => console.log(h, c),
       error: (e) => console.log('error', e),
       ...cbs
@@ -137,6 +140,7 @@ const speech = async (settings) => {
       recognition.onresult = async (event) => {
         const hit = event.results[event.results.length - 1][0].transcript
         const confidence = event.results[0][0].confidence
+        callbacks.result(hit, confidence)
 
         const command = commands.find(c => c.waitFor === hit)
         if (!command) {
@@ -150,7 +154,6 @@ const speech = async (settings) => {
         }
 
         recognition.stop()
-        callbacks.result(hit, confidence)
         resolve(command.command)
       }
 
@@ -175,8 +178,7 @@ export default class extends Component {
   constructor () {
     super()
     this.state = {
-      speech: speech(settings),
-      opacity: 0.7
+      speech: speech(settings)
     }
   }
 
@@ -196,12 +198,7 @@ export default class extends Component {
     const s = await this.state.speech
     const command = await s.waitForCommand([
       { waitFor: 'płatności', command: this.payments.bind(this) }
-    ], {
-      started: () => console.log('listening'),
-      result: (r, c) => console.log('results', r, c),
-      error: e => console.log('error', e),
-      finished: () => console.log('finished listening'),
-    })
+    ])
     await command()
   }
 
@@ -209,10 +206,10 @@ export default class extends Component {
 
   // setPayment = () => {}
   setPayment = payment => this.setState({currentPayment: payment})
-  clearPayment = () => {}
-  // clearPayment = () => this.setState({currentPayment: undefined})
+  // clearPayment = () => {}
+  clearPayment = () => this.setState({currentPayment: undefined, showProgressIndicator: false, success: false})
   progress = () => this.setState({showProgressIndicator: true})
-  success = () => {}
+  success = () => this.setState({showProgressIndicator: false, success: true})
 
   async payments () {
     const getPaymentsString = number => {
@@ -242,8 +239,8 @@ export default class extends Component {
               await wait(800)
               await s.say('chwilka')
               await wait(800)
-              await s.say('załatwione')
               this.success()
+              await s.say('załatwione')
               await wait(500)
               this.clearPayment()
             }
@@ -261,7 +258,7 @@ export default class extends Component {
       }
       await s.say(`Uregulowane płatności: ${payments.length - skipped}`)
       await s.say(`Płatności pominięte: ${skipped}`)
-      await s.say('To by było na tyle')
+      await s.say(`To by było na tyle, ${this.props.user.name}`)
     }
 
     const command = await s.waitForCommand([{waitFor: 'tak', command: listPayments.bind(null, pendingPayments)}])
@@ -270,12 +267,14 @@ export default class extends Component {
 
   render () {
     const hal = false
-    const {opacity, currentPayment} = this.state
+    const {opacity, currentPayment, showProgressIndicator, success} = this.state
     return <div className='Home'>
       <img src={assistentImage} className='assistentImage'/>
-      {console.log(currentPayment) || currentPayment && <div style={{position: 'absolute', top: '57%', right: '47%'}}>
+      <div style={{backgroundColor: 'white'}}><img src={logo} className='nameTag'/></div>
+      {currentPayment && <div style={{position: 'absolute', top: '57%', right: '47%'}}>
         <Paper circle={true} style={{padding: '7%', position: 'relative'}}>
-          <p style={{fontSize: '1.6em'}}>Płatność: '{currentPayment.name}' <b>{currentPayment.amount.toFixed(2)}zł</b></p>
+          {success && <p style={{color: cyan300, fontSize: '2.3em'}}>Załatwione!<br/></p>}
+          {!success && <p>{currentPayment.name} <b>{currentPayment.amount.toFixed(2)}zł</b>{showProgressIndicator && <span className='progressIndicatorContainer'><Loading top={20}/></span>}</p>}
           <div className='triangle'/>
         </Paper>
       </div>}

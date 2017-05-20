@@ -7,9 +7,31 @@
   max-width: 60%;
   margin: 0 auto;
 }
+
+.Home p {
+  position:relative;
+  z-index: 999;
+  font-size: 1.6em;
+}
+
+.Home .progressIndicatorContainer {
+  position: relative;
+  z-index: 999;
+  text-align: center;
+}
+
 .assistentImage {
-  max-height: 80%;
-  max-width: 80%;
+  max-height: 70%;
+  max-width: 70%;
+}
+
+.Home .nameTag {
+  background-color: white;
+  border: 1px solid black;
+  width: 6%;
+  position: absolute;
+  right: 37%;
+  bottom: 33%;
 }
 
 .flip {
@@ -26,9 +48,10 @@
   height: 0; 
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
-  
+
   border-top: 70px solid white;
   position: absolute;
+  z-index: 99;
   right: -0%;
   top: -12%;
   transform: rotate(230deg);
