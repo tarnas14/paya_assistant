@@ -270,7 +270,6 @@ export default class extends Component {
     const {opacity, currentPayment, showProgressIndicator, success} = this.state
     return <div className='Home'>
       <img src={assistentImage} className='assistentImage'/>
-      <div style={{backgroundColor: 'white'}}><img src={logo} className='nameTag'/></div>
       {currentPayment && <div style={{position: 'absolute', top: '57%', right: '47%'}}>
         <Paper circle={true} style={{padding: '7%', position: 'relative'}}>
           {success && <p style={{color: cyan300, fontSize: '2.3em'}}>Załatwione!<br/></p>}

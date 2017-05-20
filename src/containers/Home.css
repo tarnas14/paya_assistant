@@ -25,15 +25,6 @@
   max-width: 70%;
 }
 
-.Home .nameTag {
-  background-color: white;
-  border: 1px solid black;
-  width: 6%;
-  position: absolute;
-  right: 37%;
-  bottom: 33%;
-}
-
 .flip {
   -moz-transform: scaleX(-1);
   -o-transform: scaleX(-1);
