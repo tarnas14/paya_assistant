@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {getPendingPayments} from '../api'
 
-const defaultCommand = 0
+const defaultCommand = -1
 const speak = true
 
 const wait = async (delay) => new Promise(resolve => {
@@ -34,7 +34,7 @@ const speech = async (settings) => {
     }
 
     if (!speak) {
-      console.log('speaking', text)
+      callbacks.started()
       callbacks.finished()
       return Promise.resolve()
     }
@@ -75,7 +75,7 @@ const speech = async (settings) => {
       console.log('waiting for commands', commands)
       console.log('choosing', commands[defaultCommand])
       callbacks.finished()
-      return Promise.resolve(commands[defaultCommand].waitFor)
+      return Promise.resolve(commands[defaultCommand].command)
     }
 
     const addCommandsGrammar = (rec, comms) => {
@@ -93,6 +93,9 @@ const speech = async (settings) => {
     recognition.maxAlternatives = 1
 
     return new Promise((resolve, reject) => {
+      recognition.onaudiostart = () => {
+        callbacks.started()
+      }
       recognition.onnomatch = e => {
         callbacks.nomatch(e)
         reject('no match', e)
@@ -109,7 +112,7 @@ const speech = async (settings) => {
         const hit = event.results[event.results.length - 1][0].transcript
         const confidence = event.results[0][0].confidence
 
-        const command = commands.filter(c => c.waitFor === hit).length
+        const command = commands.find(c => c.waitFor === hit)
         if (!command) {
           callbacks.nomatch('not matching the grammar')
           reject('not matching the grammar')
@@ -117,11 +120,10 @@ const speech = async (settings) => {
         }
 
         callbacks.result(hit, confidence)
-        resolve(command)
+        resolve(command.command)
       }
 
       recognition.start()
-      callbacks.started()
     })
   }
   
@@ -170,9 +172,7 @@ export default class extends Component {
       error: e => console.log('error', e),
       finished: () => console.log('finished listening'),
     })
-    if (command === 'płatności') {
-      await this.payments()
-    }
+    await command()
   }
 
   listening = l => this.setState({opacity: l ? 1 : 0.7})
@@ -189,33 +189,36 @@ export default class extends Component {
     const pendingPayments = await getPendingPayments()
 
     await s.say(`Twoje płatności. Masz ${getPaymentsString(pendingPayments.length)}. Chcesz się nimi teraz zająć?`)
-    const command = await s.waitForCommand([{waitFor: 'tak'}])
-    if (command === 'tak') {
+    const listPayments = async (payments) => {
       let skipped = 0
-      for(let i = 0; i < pendingPayments.length; ++i) {
-        const payment = pendingPayments[i]
-        await s.say(`play, ${payment.amount}zł`)
+      for(let i = 0; i < payments.length; ++i) {
+        const payment = payments[i]
+        await s.say(`${payment.name}, ${payment.amount}zł`)
         const command = await s.waitForCommand([
           {
             waitFor: 'zapłać',
+            command: async () => {
+              await s.say(`opłacam ${payment.name}`)
+              await wait(2000)
+              await s.say('załatwione')
+            }
           },
           {
             waitFor: 'dalej',
-            command: () => {
+            command: async () => {
               skipped++
-              return Promise.resolve()
+              await s.say(`pomijam ${payment.name}`)
             }
           },
         ])
-        if (command === 'zapłać') {
-          await s.say(`opłacam ${payment.name}`)
-          await wait(2000)
-          await s.say('załatwione')
-        }
+        await command()
       }
-      await s.say(`Uregulowane płatności: ${pendingPayments.length - skipped}`)
+      await s.say(`Uregulowane płatności: ${payments.length - skipped}`)
       await s.say(`Płatności pominięte: ${skipped}`)
     }
+
+    const command = await s.waitForCommand([{waitFor: 'tak', command: listPayments.bind(null, pendingPayments)}])
+    await command()
   }
 
   render () {
