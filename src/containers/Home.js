@@ -71,8 +71,8 @@ const speech = async (settings) => {
       ...cbs
     }
 
+    console.log('waiting for commands', commands.map(c => `"${c.waitFor}"`).join())
     if (defaultCommand !== -1) {
-      console.log('waiting for commands', commands)
       console.log('choosing', commands[defaultCommand])
       callbacks.finished()
       return Promise.resolve(commands[defaultCommand].command)
@@ -163,8 +163,7 @@ export default class extends Component {
   async next () {
     const s = await this.state.speech
     const command = await s.waitForCommand([
-      { waitFor: 'płatności', command: this.payments.bind(this) }, 
-      { waitFor: 'kurwa', command: () => console.log('woohoo') || Promise.resolve() }
+      { waitFor: 'płatności', command: this.payments.bind(this) }
     ], {
       started: () => console.log('listening'),
       result: (r, c) => console.log('results', r, c),
@@ -198,8 +197,10 @@ export default class extends Component {
           {
             waitFor: 'zapłać',
             command: async () => {
-              await s.say(`opłacam ${payment.name}`)
-              await wait(2000)
+              await s.say(`opłacam. ${payment.name}`)
+              await wait(800)
+              await s.say(`chwilka. ${payment.name}`)
+              await wait(800)
               await s.say('załatwione')
             }
           },
@@ -207,7 +208,7 @@ export default class extends Component {
             waitFor: 'dalej',
             command: async () => {
               skipped++
-              await s.say(`pomijam ${payment.name}`)
+              await s.say(`pomijam. ${payment.name}`)
             }
           },
         ])
@@ -215,6 +216,7 @@ export default class extends Component {
       }
       await s.say(`Uregulowane płatności: ${payments.length - skipped}`)
       await s.say(`Płatności pominięte: ${skipped}`)
+      await s.say('To by było na tyle')
     }
 
     const command = await s.waitForCommand([{waitFor: 'tak', command: listPayments.bind(null, pendingPayments)}])
