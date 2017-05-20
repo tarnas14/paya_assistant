@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && zip build.zip -r ./build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "ngrok": "ngrok http 3000"

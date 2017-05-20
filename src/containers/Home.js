@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {getPendingPayments} from '../api'
 
-const defaultCommand = -1
+const defaultCommand = 0
 const speak = true
 
 const wait = async (delay) => new Promise(resolve => {
@@ -187,7 +187,8 @@ export default class extends Component {
     const s = await this.state.speech
     const pendingPayments = await getPendingPayments()
 
-    await s.say(`Twoje płatności. Masz ${getPaymentsString(pendingPayments.length)}. Chcesz się nimi teraz zająć?`)
+    await s.say('Twoje płatności.')
+    await s.say(`Masz ${getPaymentsString(pendingPayments.length)}. Chcesz się nimi teraz zająć?`)
     const listPayments = async (payments) => {
       let skipped = 0
       for(let i = 0; i < payments.length; ++i) {
@@ -199,7 +200,7 @@ export default class extends Component {
             command: async () => {
               await s.say(`opłacam. ${payment.name}`)
               await wait(800)
-              await s.say(`chwilka. ${payment.name}`)
+              await s.say('chwilka')
               await wait(800)
               await s.say('załatwione')
             }
