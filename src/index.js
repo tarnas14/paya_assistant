@@ -67,9 +67,9 @@ class AppWrapper extends React.Component {
   }
 
   async componentDidMount() {
-    if (auth.loggedIn()) {
+    // if (auth.loggedIn()) {
       this.setUser(await getBasicUserInfo())
-    }
+    // }
   }
 
   setUser = user => {
@@ -85,12 +85,14 @@ class AppWrapper extends React.Component {
         message={`ERROR: ${this.state.error}`}
         autoHideDuration={4000}
       />
+      <Route exact path="/" authed={loggedIn} component={() => <App user={currentUser}><HomeContainer user={currentUser}/></App>}/>
+      {/*
       <Switch>
         <Route exact path="/login" render={(props) => <Login {...props}/>}/>
         <MatchWhenAuthorized exact path="/" authed={loggedIn} component={() => <App user={currentUser}><HomeContainer user={currentUser}/></App>}/>
         <MatchWhenAuthorized exact path="/logout" authed={loggedIn} component={Logout}/>
         <Route path="/" component={() => <Content>you have reached the tipping point... AHAHAH YOU GET IT? TIPPING POINT<br/>(404 not found)</Content>}/>
-      </Switch>
+      </Switch>*/}
     </div>
   }
 }

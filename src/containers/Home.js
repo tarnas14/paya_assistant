@@ -192,7 +192,7 @@ export default class extends Component {
       let skipped = 0
       for(let i = 0; i < payments.length; ++i) {
         const payment = payments[i]
-        await s.say(`${payment.name}, ${payment.amount}zł`)
+        await s.say(`${payment.name}. ${payment.amount}zł`)
         const command = await s.waitForCommand([
           {
             waitFor: 'zapłać',
