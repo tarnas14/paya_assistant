@@ -27,7 +27,7 @@ const getBasicUserInfo = async () => {
     }
   }
   
-  return await authorizedFetch(`${apiEndpoint}/profile`)
+  return await authorizedFetch(`${apiEndpoint}/api/profile`)
 }
 
 const getProfileStats = async () => {
@@ -103,7 +103,7 @@ const getPendingPayments = async () => {
     }]
   }
   
-  return await authorizedFetch(`${apiEndpoint}/payments`)
+  return await authorizedFetch(`${apiEndpoint}/api/payments`)
 }
 
 const login = async (username, password) => {
