@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {getPendingPayments} from '../api'
 
-const defaultCommand = 0
-const speak = true
+const defaultCommand = process.env.REACT_APP_SKIP_COMMANDS ? 0 : -1
+const speak = !Boolean(process.env.REACT_APP_SKIP_SPEECH)
 
 const wait = async (delay) => new Promise(resolve => {
   window.setTimeout(() => resolve(), delay)

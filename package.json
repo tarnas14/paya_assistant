@@ -20,7 +20,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "rm -rf build && rm build.zip && react-scripts build && zip build.zip -r ./build",
+    "dev": "REACT_APP_SKIP_COMMANDS=true REACT_APP_SKIP_SPEECH=true react-scripts start",
+    "pre-build": "rm -rf build && rm build.zip",
+    "build": "react-scripts build",
+    "post-build": "zip build.zip -r ./build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "ngrok": "ngrok http 3000"
