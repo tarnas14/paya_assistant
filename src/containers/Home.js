@@ -170,6 +170,7 @@ export default class extends Component {
   }
 
   async componentDidMount () {
+    this.setState({pendingPayments: getPendingPayments()})
     await this.greet(await this.props.user)
     await this.next()
   }
@@ -204,7 +205,7 @@ export default class extends Component {
     }
 
     const s = await this.state.speech
-    const pendingPayments = await getPendingPayments()
+    const pendingPayments = await this.state.pendingPayments
 
     await s.say('Twoje płatności.')
     await s.say(`Masz ${getPaymentsString(pendingPayments.length)}. Chcesz się nimi teraz zająć?`)

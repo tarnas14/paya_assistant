@@ -19,15 +19,6 @@ const authorizedFetch = async (endpoint, options) => {
   return response.json()
 }
 
-const getUserInfoFromQrCodeValue = async (qrCodeValue) => {
-  return Promise.resolve({
-    name: 'John Doe',
-    email: 'john@doe.com',
-    description: 'Life enthusiast',
-    iconColor: 'rebeccapurple'
-  })
-}
-
 const getBasicUserInfo = async () => {
   if (!apiEndpoint) {
     return {
@@ -104,11 +95,15 @@ const setOutgoingAccount = async ({accountId, bankId, iban}) => {
 }
 
 const getPendingPayments = async () => {
-  return [{
-    name: 'PLAY', amount: '50'
-  }, {
-    name: 'czynsz', amount: '850.23'
-  }]
+  if (!apiEndpoint) {
+    return [{
+      name: 'PLAY', amount: '50'
+    }, {
+      name: 'czynsz', amount: '850.23'
+    }]
+  }
+  
+  return await authorizedFetch(`${apiEndpoint}/payments`)
 }
 
 const login = async (username, password) => {
@@ -136,7 +131,6 @@ const login = async (username, password) => {
 }
 
 export {
-  getUserInfoFromQrCodeValue,
   getBasicUserInfo,
   getProfileStats,
   getHistory,
