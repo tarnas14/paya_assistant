@@ -4,7 +4,7 @@ import {getPendingPayments} from '../api'
 const defaultCommand = process.env.REACT_APP_SKIP_COMMANDS ? 0 : -1
 const speak = !Boolean(process.env.REACT_APP_SKIP_SPEECH)
 
-const wait = async (delay) => new Promise(resolve => {
+const wait = async (delay = 100) => new Promise(resolve => {
   window.setTimeout(() => resolve(), delay)
 })
 
@@ -66,7 +66,6 @@ const speech = async (settings) => {
       started: () => console.log('waiting for command'),
       finished: () => console.log('stopped waiting'),
       result: (h, c) => console.log(h, c),
-      nomatch: (e) => console.log('no match', e),
       error: (e) => console.log('error', e),
       ...cbs
     }
@@ -92,33 +91,54 @@ const speech = async (settings) => {
     recognition.interimResults = false
     recognition.maxAlternatives = 1
 
+    let bounceCounter = 0
+    const bounce = () => {
+      bounceCounter++
+    }
+
+    const listCommands = async () => {
+      if (bounceCounter % 3 === 0) {
+        return
+      }
+      await say('Dostępne komendy to.')
+      await say(commands.map(c => c.waitFor).join('.'))
+      await say('Spróbuj jeszcze raz.')
+    }
+
     return new Promise((resolve, reject) => {
       recognition.onaudiostart = () => {
         callbacks.started()
       }
-      recognition.onnomatch = e => {
-        callbacks.nomatch(e)
-        reject('no match', e)
-      }
-      recognition.onerror = e => {
+
+      recognition.onerror = async (e) => {
+        if (e.error === 'no-speech') {
+          bounce()
+          await say('Nie dosłyszałam. Sprawdź czy masz włączony mikrofon.')
+          await listCommands()
+          recognition.stop()
+          recognition.start()
+          return
+        }
         callbacks.error(e)
         reject('error', e)
       }
-      recognition.onspeechend = () => {
-        callbacks.finished()
-        recognition.stop()
-      }
-      recognition.onresult = (event) => {
+
+      recognition.onresult = async (event) => {
         const hit = event.results[event.results.length - 1][0].transcript
         const confidence = event.results[0][0].confidence
 
         const command = commands.find(c => c.waitFor === hit)
         if (!command) {
-          callbacks.nomatch('not matching the grammar')
-          reject('not matching the grammar')
+          bounce()
+          await say(`Nie rozpoznałam komendy.`)
+          await listCommands()
+
+          recognition.stop()
+          recognition.start()
           return
         }
 
+        recognition.stop()
         callbacks.result(hit, confidence)
         resolve(command.command)
       }
@@ -167,7 +187,6 @@ export default class extends Component {
     ], {
       started: () => console.log('listening'),
       result: (r, c) => console.log('results', r, c),
-      nomatch: e => console.log('nomatch', e),
       error: e => console.log('error', e),
       finished: () => console.log('finished listening'),
     })

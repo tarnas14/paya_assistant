@@ -87,7 +87,7 @@ class AppWrapper extends React.Component {
         message={`ERROR: ${this.state.error}`}
         autoHideDuration={4000}
       />
-      <Route exact path="/index.html" authed={loggedIn} component={() => <App user={currentUser}><HomeContainer setError={this.setError} user={currentUser}/></App>}/>
+      <Route exact path="/" authed={loggedIn} component={() => <App user={currentUser}><HomeContainer setError={this.setError} user={currentUser}/></App>}/>
       {/*
       <Switch>
         <Route exact path="/login" render={(props) => <Login {...props}/>}/>
