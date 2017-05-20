@@ -39,7 +39,7 @@ class App extends Component {
         <AppBar
           iconClassNameRight="muidocs-icon-navigation-expand-more"
           onLeftIconButtonTouchTap={this.handleMenuClick}
-          title="Tiper"
+          title="PayAssistant"
         />
         <Drawer
           docked={false}
@@ -52,35 +52,7 @@ class App extends Component {
             style={{textAlign: 'left'}}
             containerElement={<Link to="/" />}
             onTouchTap={this.handleMenuClose}
-            primaryText="Tip"
-          />
-          <MenuItem
-            style={{textAlign: 'left'}}
-            leftIcon={<RemoveRedEye />}
-            containerElement={<Link to="/mycode" />}
-            onTouchTap={this.handleMenuClose}
-            primaryText="My QR Code"
-          />
-          <MenuItem
-            style={{textAlign: 'left'}}
-            leftIcon={<Time/>}
-            containerElement={<Link to="/tiphistory" />}
-            primaryText="History"
-            onTouchTap={this.handleMenuClose}
-          />
-          <MenuItem
-            style={{textAlign: 'left'}}
-            leftIcon={<Assessment />}
-            containerElement={<Link to="/stats" />}
-            primaryText="Stats"
-            onTouchTap={this.handleMenuClose}
-          />
-          <MenuItem
-            style={{textAlign: 'left'}}
-            leftIcon={<AccountBox />}
-            containerElement={<Link to="/myaccount" />}
-            primaryText="MyAccount"
-            onTouchTap={this.handleMenuClose}
+            primaryText="Home"
           />
           <Divider/>
           <MenuItem

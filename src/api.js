@@ -1,100 +1,83 @@
-import qs from 'qs'
-import auth from './auth'
-
-const apiEndpoint = process.env.REACT_APP_API
-
 const getUserInfoFromQrCodeValue = async (qrCodeValue) => {
-  // get /users/{guid}
-  return fetch(`${apiEndpoint}/users/${qrCodeValue}?token=${auth.token()}`).then(response => response.json())
+  return Promise.resolve({
+    name: 'John Doe',
+    email: 'john@doe.com',
+    description: 'Life enthusiast',
+    iconColor: 'rebeccapurple'
+  })
 }
 
 const getBasicUserInfo = async () => {
-  // get /profile
-  return fetch(`${apiEndpoint}/profile?token=${auth.token()}`).then(response => response.json()).catch(console.log)
+  return Promise.resolve({
+    name: 'John Smith',
+    email: 'john@smith.com',
+    description: 'One and the same',
+    iconColor: 'orange'
+  })
 }
 
 const getProfileStats = async () => {
-  return fetch(`${apiEndpoint}/profile/stats?token=${auth.token()}`).then(response => response.json())
+  const date = {
+    date: Date.now().toISOString()
+  }
+  return {
+    given: [{
+      date,
+      numberOfGiven: 2,
+      totalAmount: 12.23,
+    }],
+    received: [{
+      date,
+      numberOfReceived: 1,
+      totalAmount: 13.23
+    }],
+  }
 }
 
 const getHistory = async () => {
-  return fetch(`${apiEndpoint}/profile/tips?token=${auth.token()}`).then(response => response.json())
+  const date = {
+    date: Date.now().toISOString()
+  }
+  return {
+    given: [{
+      date,
+      amount: 5,    
+      message: 'Great service',
+      recipientColor: 'yellow',
+      recipientName: 'Shamrock the Readhead',
+    }],
+    received: [{
+      date,
+      amount: 9,
+      message: 'You made me smile!',
+    }],
+  }
 }
 
 const getProfileAccounts = async () => {
-  return fetch(`${apiEndpoint}/profile/accounts?token=${auth.token()}`).then(response => response.json())
+  return [{
+    account: {
+      id: 'iad',
+      name: 'Moje konto',
+      iban: '9018340192384012934',
+    },
+    bank: {
+      id: 'alwer',
+      name: 'Some bank',
+    }
+  }]
 }
 
 const giveTip = async ({recipientGuid, amount, message}) => {
-  // post /tips
-  const tipPayload = {
-    recipient_guid: recipientGuid,
-    amount: amount * 100,
-    message,
-  }
-
-  const response = await fetch(
-    `${apiEndpoint}/tips?token=${auth.token()}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-      },
-      body: qs.stringify(tipPayload)
-    }
-  )
-
-  return response.json()
+  return {}
 }
 
 const setIncomingAccount = async ({accountId, bankId, iban}) => {
-  const payload = {
-    account_id: accountId,
-    bank_id: bankId,
-    iban,
-  }
-
-  const response = await fetch(
-    `${apiEndpoint}/profile/incomingAccount?token=${auth.token()}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-      },
-      body: qs.stringify(payload)
-    }
-  )
-
-  if (response.status < 200 || response.status >= 300) {
-    return {error: response.statusText} 
-  }
-
-  return response.json()
+  return {}
 }
 
 const setOutgoingAccount = async ({accountId, bankId, iban}) => {
-  const payload = {
-    account_id: accountId,
-    bank_id: bankId,
-    iban,
-  }
-
-  const response = await fetch(
-    `${apiEndpoint}/profile/outgoingAccount?token=${auth.token()}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-      },
-      body: qs.stringify(payload)
-    }
-  )
-
-  if (response.status < 200 || response.status >= 300) {
-    return {error: response.statusText} 
-  }
-
-  return response.json()
+  return {}
 }
 
 export {
