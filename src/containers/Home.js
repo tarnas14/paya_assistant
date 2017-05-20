@@ -2,7 +2,11 @@ import React, {Component} from 'react'
 import {getPendingPayments} from '../api'
 
 const defaultCommand = 0
-const speak = false
+const speak = true
+
+const wait = async (delay) => new Promise(resolve => {
+  window.setTimeout(() => resolve(), delay)
+})
 
 const speech = async (settings) => {
   const synthesis = window.speechSynthesis
@@ -13,32 +17,43 @@ const speech = async (settings) => {
     )
   })
 
+  const utt = new SpeechSynthesisUtterance()
+  utt.pitch = settings.pitch
+  utt.rate = settings.rate
+  utt.voice = voice
+  utt.onboundary = () => console.log('boundary')
+  utt.onmark = () => console.log('mark')
+  utt.onpause = () => console.log('pause')
+
   const say = async (text, c) => {
     const callbacks = {
-      started: () => console.log('speaking'),
-      finished: () => console.log('stopped speaking'),
+      started: () => console.log('speaking', text),
+      finished: () => console.log('stopped speaking', text),
+      onerror: e => console.log('error', e),
       ...c
     }
+
     if (!speak) {
       console.log('speaking', text)
       callbacks.finished()
       return Promise.resolve()
     }
-    return new Promise((resolve, reject) => {
-      const utt = new SpeechSynthesisUtterance(text)
-      utt.pitch = settings.pitch
-      utt.rate = settings.rate
-      utt.voice = voice
-      utt.onstart = callbacks.started
-      utt.onend = callbacks.finished
 
-      synthesis.speak(utt)
+    utt.text = text
+    return new Promise((resolve, reject) => {
+      utt.onstart = callbacks.started
+
+      utt.onerror = () => {
+        callbacks.onerror()
+        reject()
+      }
 
       utt.onend = () => {
         callbacks.finished()
         resolve()
       }
-      utt.onerror = reject
+
+      synthesis.speak(utt)
     })
   }
 
@@ -55,12 +70,12 @@ const speech = async (settings) => {
       error: (e) => console.log('error', e),
       ...cbs
     }
+
     if (defaultCommand !== -1) {
       console.log('waiting for commands', commands)
       console.log('choosing', commands[defaultCommand])
       callbacks.finished()
-      commands[defaultCommand].command()
-      return Promise.resolve()
+      return Promise.resolve(commands[defaultCommand].waitFor)
     }
 
     const addCommandsGrammar = (rec, comms) => {
@@ -77,9 +92,6 @@ const speech = async (settings) => {
     recognition.interimResults = false
     recognition.maxAlternatives = 1
 
-    recognition.start()
-    callbacks.started()
-
     return new Promise((resolve, reject) => {
       recognition.onnomatch = e => {
         callbacks.nomatch(e)
@@ -89,11 +101,15 @@ const speech = async (settings) => {
         callbacks.error(e)
         reject('error', e)
       }
+      recognition.onspeechend = () => {
+        callbacks.finished()
+        recognition.stop()
+      }
       recognition.onresult = (event) => {
         const hit = event.results[event.results.length - 1][0].transcript
         const confidence = event.results[0][0].confidence
 
-        const command = commands.find(c => c.waitFor === hit)
+        const command = commands.filter(c => c.waitFor === hit).length
         if (!command) {
           callbacks.nomatch('not matching the grammar')
           reject('not matching the grammar')
@@ -101,14 +117,11 @@ const speech = async (settings) => {
         }
 
         callbacks.result(hit, confidence)
-        command.command()
-        resolve()
+        resolve(command)
       }
 
-      recognition.onspeechend = () => {
-        callbacks.finished()
-        recognition.stop()
-      }
+      recognition.start()
+      callbacks.started()
     })
   }
   
@@ -147,9 +160,9 @@ export default class extends Component {
 
   async next () {
     const s = await this.state.speech
-    await s.waitForCommand([
-      { waitFor: 'płatności', command: () => this.payments() }, 
-      { waitFor: 'kurwa', command: () => console.log('woohoo') }
+    const command = await s.waitForCommand([
+      { waitFor: 'płatności', command: this.payments.bind(this) }, 
+      { waitFor: 'kurwa', command: () => console.log('woohoo') || Promise.resolve() }
     ], {
       started: () => console.log('listening'),
       result: (r, c) => console.log('results', r, c),
@@ -157,6 +170,9 @@ export default class extends Component {
       error: e => console.log('error', e),
       finished: () => console.log('finished listening'),
     })
+    if (command === 'płatności') {
+      await this.payments()
+    }
   }
 
   listening = l => this.setState({opacity: l ? 1 : 0.7})
@@ -172,29 +188,33 @@ export default class extends Component {
     const s = await this.state.speech
     const pendingPayments = await getPendingPayments()
 
-    await s.say('Twoje płatności.')
-    await s.say(`Masz ${getPaymentsString(pendingPayments.length)}`)
-    await s.say('czy chcesz się nimi teraz zająć?')
-    await s.waitForCommand([{waitFor: 'tak', command: () => this.listPayments(pendingPayments)}])
-  }
-
-  async listPayments (pendingPayments) {
-    const s = await this.state.speech
-
-    for(let i = 0; i < pendingPayments.length; ++i) {
-      const payment = pendingPayments[i]
-      await s.say(payment.name)
-      await s.say(`${payment.amount}zł`)
-      await s.waitForCommand([
-        {
-          waitFor: 'dalej',
-          command: () => console.log('skipping', payment)
-        },
-        {
-          waitFor: 'zapłać',
-          command: () => console.log('płacimy', payment)
-        },
-      ])
+    await s.say(`Twoje płatności. Masz ${getPaymentsString(pendingPayments.length)}. Chcesz się nimi teraz zająć?`)
+    const command = await s.waitForCommand([{waitFor: 'tak'}])
+    if (command === 'tak') {
+      let skipped = 0
+      for(let i = 0; i < pendingPayments.length; ++i) {
+        const payment = pendingPayments[i]
+        await s.say(`play, ${payment.amount}zł`)
+        const command = await s.waitForCommand([
+          {
+            waitFor: 'zapłać',
+          },
+          {
+            waitFor: 'dalej',
+            command: () => {
+              skipped++
+              return Promise.resolve()
+            }
+          },
+        ])
+        if (command === 'zapłać') {
+          await s.say(`opłacam ${payment.name}`)
+          await wait(2000)
+          await s.say('załatwione')
+        }
+      }
+      await s.say(`Uregulowane płatności: ${pendingPayments.length - skipped}`)
+      await s.say(`Płatności pominięte: ${skipped}`)
     }
   }
 
