@@ -20,24 +20,12 @@ injectTapEventPlugin()
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
-import {purple500} from 'material-ui/styles/colors'
+import {cyan300} from 'material-ui/styles/colors'
 import App from './App'
 import './index.css'
 
 import Content from './components/Content'
-import redirectToLoginPage from './components/RedirectToLoginPage'
-
-const Login = ({location}) => {
-  const {token, afterLoginGoTo} = urijs.parseQuery(location.search)
-  if (!token) {
-    return <div>dude, get a token first</div>
-  }
-
-  auth.login(token)
-
-  const from = afterLoginGoTo || '/'
-  return <Redirect to={from} />
-}
+import RedirectToLoginPage from './components/RedirectToLoginPage'
 
 const Logout = () => {
   auth.logout();
@@ -45,11 +33,11 @@ const Logout = () => {
   return <Redirect to={'/'} />
 }
 
-const MatchWhenAuthorized = ({component: Component, authed, ...rest}) => (
+const MatchWhenAuthorized = ({component: Component, authed, setUser, ...rest}) => (
   <Route {...rest} render={renderProps => (
     authed ? (
       <Component {...renderProps} />
-    ) : redirectToLoginPage()
+    ) : <RedirectToLoginPage setUser={setUser} />
   )}/>
 )
 
@@ -66,10 +54,10 @@ class AppWrapper extends React.Component {
     }
   }
 
-  async componentDidMount() {
-    // if (auth.loggedIn()) {
+  async componentDidMount () {
+    if (auth.loggedIn()) {
       this.setUser(await getBasicUserInfo())
-    // }
+    }
   }
 
   setUser = user => {
@@ -87,14 +75,11 @@ class AppWrapper extends React.Component {
         message={`ERROR: ${this.state.error}`}
         autoHideDuration={4000}
       />
-      <Route exact path="/" authed={loggedIn} component={() => <App user={currentUser}><HomeContainer setError={this.setError} user={currentUser}/></App>}/>
-      {/*
       <Switch>
-        <Route exact path="/login" render={(props) => <Login {...props}/>}/>
-        <MatchWhenAuthorized exact path="/" authed={loggedIn} component={() => <App user={currentUser}><HomeContainer user={currentUser}/></App>}/>
-        <MatchWhenAuthorized exact path="/logout" authed={loggedIn} component={Logout}/>
-        <Route path="/" component={() => <Content>you have reached the tipping point... AHAHAH YOU GET IT? TIPPING POINT<br/>(404 not found)</Content>}/>
-      </Switch>*/}
+        <MatchWhenAuthorized exact path="/" authed={loggedIn} setUser={this.setUser} component={() => <App user={currentUser}><HomeContainer user={currentUser}/></App>}/>
+        <MatchWhenAuthorized exact path="/logout" authed={loggedIn} setUser={this.setUser} component={Logout}/>
+        <Route path="/" component={() => <Content>404 not found</Content>}/>
+      </Switch>
     </div>
   }
 }
@@ -104,7 +89,7 @@ class AppWrapper extends React.Component {
 // More on Colors: http://www.material-ui.com/#/customization/colors
 const muiTheme = getMuiTheme({
   palette: {
-    primary1Color: purple500,
+    primary1Color: cyan300,
   },
   appBar: {
     height: 50,

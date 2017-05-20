@@ -10,10 +10,12 @@
 
 .loginPage .form {
     padding: 100px 0;
-    background: #ff6f00;
+    background: #4DD0E1;
 }
 
 .loginPage .form .half {
-    width: 75%;
+    width: 50%;
     margin: 0 auto;
+    background-color: white;
+    padding: 10px 40px;
 }

@@ -1,3 +1,6 @@
+import qs from 'qs'
+const apiEndpoint = process.env.REACT_APP_API
+
 const getUserInfoFromQrCodeValue = async (qrCodeValue) => {
   return Promise.resolve({
     name: 'John Doe',
@@ -88,6 +91,30 @@ const getPendingPayments = async () => {
   }]
 }
 
+const login = async (username, password) => {
+  if (!apiEndpoint) {
+    return {token: 'asdf'}
+  }
+
+  const b = new FormData()
+  b.append('username', username)
+  b.append('password', password)
+
+  const response = await fetch(
+    `${apiEndpoint}/auth`,
+    {
+      method: 'POST',
+      body: b
+    }
+  )
+
+  if (response.status < 200 || response.status >= 300) {
+    return {error: response.statusText} 
+  }
+
+  return response.json()
+}
+
 export {
   getUserInfoFromQrCodeValue,
   getBasicUserInfo,
@@ -98,5 +125,6 @@ export {
   setIncomingAccount,
   setOutgoingAccount,
   
-  getPendingPayments
+  getPendingPayments,
+  login,
 }
