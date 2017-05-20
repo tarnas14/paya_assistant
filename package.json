@@ -2,6 +2,7 @@
   "name": "tiper",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "material-ui": "^0.18.0",
     "qrcode.react": "^0.7.1",
@@ -21,9 +22,9 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "REACT_APP_SKIP_COMMANDS=true REACT_APP_SKIP_SPEECH=true react-scripts start",
-    "pre-build": "rm -rf build && rm build.zip",
+    "prebuild": "rm -rf build && rm build.zip",
     "build": "react-scripts build",
-    "post-build": "zip build.zip -r ./build",
+    "postbuild": "zip build.zip -r ./build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "ngrok": "ngrok http 3000"
