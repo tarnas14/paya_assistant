@@ -4,12 +4,12 @@
   min-width: 360px;
   min-height: 480px;
   max-height: 100%;
-  max-width: 50%;
+  max-width: 60%;
   margin: 0 auto;
 }
 .assistentImage {
-  max-height: 100%;
-  max-width: 100%;
+  max-height: 80%;
+  max-width: 80%;
 }
 
 .flip {
@@ -19,4 +19,17 @@
   transform: scaleX(-1);
   filter: FlipH;
   -ms-filter: "FlipH";
+}
+
+.triangle {
+  width: 0; 
+  height: 0; 
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  
+  border-top: 70px solid white;
+  position: absolute;
+  right: -0%;
+  top: -12%;
+  transform: rotate(230deg);
 }

@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {getPendingPayments} from '../api'
 import assistentImage from '../images/paya.png'
 import './Home.css'
+import Paper from 'material-ui/Paper'
 
 const defaultCommand = process.env.REACT_APP_SKIP_COMMANDS ? 0 : -1
 const speak = !Boolean(process.env.REACT_APP_SKIP_SPEECH)
@@ -87,7 +88,7 @@ const speech = async (settings) => {
     }
 
     const recognition = new speechRecognition()
-    // doesnt work, for some reason
+    // doesnt work for some reason
     addCommandsGrammar(recognition, commands)
     recognition.lang = settings.lang
     recognition.interimResults = false
@@ -167,7 +168,7 @@ export default class extends Component {
     super()
     this.state = {
       speech: speech(settings),
-      opacity: 0.7,
+      opacity: 0.7
     }
   }
 
@@ -198,6 +199,13 @@ export default class extends Component {
 
   listening = l => this.setState({opacity: l ? 1 : 0.7})
 
+  // setPayment = () => {}
+  setPayment = payment => this.setState({currentPayment: payment})
+  clearPayment = () => {}
+  // clearPayment = () => this.setState({currentPayment: undefined})
+  progress = () => this.setState({showProgressIndicator: true})
+  success = () => {}
+
   async payments () {
     const getPaymentsString = number => {
       const map = ['jedną zaległą płatność', 'dwie zaległe płatności', 'trzy zaległe płatności',
@@ -215,16 +223,21 @@ export default class extends Component {
       let skipped = 0
       for(let i = 0; i < payments.length; ++i) {
         const payment = payments[i]
+        this.setPayment(payment)
         await s.say(`${payment.name}. ${payment.amount}zł`)
         const command = await s.waitForCommand([
           {
             waitFor: 'zapłać',
             command: async () => {
+              this.progress()
               await s.say(`opłacam. ${payment.name}`)
               await wait(800)
               await s.say('chwilka')
               await wait(800)
               await s.say('załatwione')
+              this.success()
+              await wait(500)
+              this.clearPayment()
             }
           },
           {
@@ -232,6 +245,7 @@ export default class extends Component {
             command: async () => {
               skipped++
               await s.say(`pomijam. ${payment.name}`)
+              this.clearPayment()
             }
           },
         ])
@@ -248,9 +262,15 @@ export default class extends Component {
 
   render () {
     const hal = false
-    const {opacity} = this.state
+    const {opacity, currentPayment} = this.state
     return <div className='Home'>
       <img src={assistentImage} className='assistentImage'/>
+      {console.log(currentPayment) || currentPayment && <div style={{position: 'absolute', top: '57%', right: '47%'}}>
+        <Paper circle={true} style={{padding: '7%', position: 'relative'}}>
+          <p style={{fontSize: '1.6em'}}>Płatność: '{currentPayment.name}' <b>{currentPayment.amount.toFixed(2)}zł</b></p>
+          <div className='triangle'/>
+        </Paper>
+      </div>}
       { hal && <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/HAL9000.svg/220px-HAL9000.svg.png" style={{opacity}}/>}
     </div>
   }

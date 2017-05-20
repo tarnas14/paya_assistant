@@ -97,9 +97,9 @@ const setOutgoingAccount = async ({accountId, bankId, iban}) => {
 const getPendingPayments = async () => {
   if (!apiEndpoint) {
     return [{
-      name: 'PLAY', amount: '50'
+      name: 'czynsz', amount: 850.23
     }, {
-      name: 'czynsz', amount: '850.23'
+      name: 'PLAY za miesiąc kwiecień', amount: 50
     }]
   }
   

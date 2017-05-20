@@ -39,7 +39,7 @@ class App extends Component {
         <AppBar
           iconClassNameRight="muidocs-icon-navigation-expand-more"
           onLeftIconButtonTouchTap={this.handleMenuClick}
-          title="PayAssistant"
+          title="PAYA"
         />
         <Drawer
           docked={false}
