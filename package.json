@@ -22,9 +22,7 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "REACT_APP_SKIP_COMMANDS=true REACT_APP_SKIP_SPEECH=true react-scripts start",
-    "prebuild": "rm -rf build && rm build.zip",
     "build": "react-scripts build",
-    "postbuild": "zip build.zip -r ./build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "ngrok": "ngrok http 3000"
