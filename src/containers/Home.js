@@ -33,8 +33,12 @@ const languagePacks = [
       pay: 'zapłać',
       skip: 'dalej',
       yes: 'tak proszę',
+      onlyList: 'tylko wylistuj',
+      noThankYou: 'nie dziękuję',
     },
     lines: {
+      noIsNo: () => 'Nie to nie',
+      listingPayments: () => 'Listuję płatności.',
       noPendingPayments: () => 'Nie masz żadnych zaległych płatności.',
       availableCommands: () => 'Dostępne komendy to:',
       and: () => 'oraz',
@@ -42,7 +46,7 @@ const languagePacks = [
       greeting: name => `Witaj, ${name}`,
       howCanIHelpYou: () => 'W czym mogę Ci pomóc?',
       couldNotCatchThat: () => 'Nie dosłyszałam. Sprawdź czy masz włączony mikrofon.',
-      unknownCommand: () => 'Nie rozpoznałam komendy.',
+      unknownCommand: hit => `Nie rozpoznałam komendy '${hit}'.`,
       howElseCanIHelpYou: () => 'W czym jeszcze mogę Ci pomóc?',
       ifYouReallyMustKnow: () => 'Jeśli już koniecznie chcesz wiedzieć.',
       noProblem: () => 'Nie ma za co ;)',
@@ -72,8 +76,12 @@ const languagePacks = [
       pay: 'payment',
       skip: 'skip please',
       yes: 'yes please',
+      onlyList: 'just list',
+      noThankYou: 'no thank you',
     },
     lines: {
+      noIsNo: () => 'Whatever, then',
+      listingPayments: () => 'Listing payments.',
       noPendingPayments: () => 'You have no pending payments.',
       availableCommands: () => 'Available commands are:',
       and: () => 'and',
@@ -81,7 +89,7 @@ const languagePacks = [
       greeting: name => `Hello, ${name}`,
       howCanIHelpYou: () => 'How may I help you?',
       couldNotCatchThat: () => 'I did not catch that. Check if your mic is plugged in.',
-      unknownCommand: () => 'Unknown command',
+      unknownCommand: hit => `Unknown command '${hit}'`,
       howElseCanIHelpYou: () => 'How else may I help you?',
       ifYouReallyMustKnow: () => 'If you really insist.',
       noProblem: () => 'You are welcome ;)',
@@ -295,7 +303,7 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
         const command = commands.find(c => c.waitFor.toLowerCase() === hit.toLowerCase())
         if (!command) {
           bounce()
-          await say(lines.unknownCommand())
+          await say(lines.unknownCommand(hit))
           await listCommands()
 
           recognition.stop()
@@ -430,7 +438,24 @@ export default class extends Component {
         await s.say(lines.thatsAll(this.props.user.name))
       }
 
-      const command = await s.waitForCommand([{waitFor: commands.yes, command: listPayments.bind(null, pendingPayments)}])
+      const onlyList = async (payments) => {
+        await s.say(lines.listingPayments())
+        for(let i = 0; i < payments.length; ++i) {
+          const payment = payments[i]
+          this.setPayment(payment)
+          await s.say(lines.paymentDescription(payment))
+          await wait(200)
+          if (i < payments.length - 1) {
+            await s.say(lines.and())
+          }
+        }
+      }
+
+      const command = await s.waitForCommand([
+        {waitFor: commands.yes, command: listPayments.bind(null, pendingPayments)},
+        {waitFor: commands.onlyList, command: onlyList.bind(null, pendingPayments)},
+        {waitFor: commands.noThankYou, command: async () => await s.say(lines.noIsNo()) }
+      ])
       await command()
       return
     }
