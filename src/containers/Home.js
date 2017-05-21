@@ -29,7 +29,7 @@ const languagePacks = [
     predicate: lang => settings.langs.includes(lang),
     commands: {
       payments: 'płatności',
-      meaningOfLife: 'jaki jest sens życia',
+      whatIsTheMeaningOfLife: 'jaki jest sens życia',
       pay: 'zapłać',
       skip: 'dalej',
       yes: 'tak proszę',
@@ -37,6 +37,7 @@ const languagePacks = [
       noThankYou: 'nie dziękuję',
     },
     lines: {
+      theMeaningOfLife: () => 'Sens życia to: 42',
       noIsNo: () => 'Nie to nie',
       listingPayments: () => 'Listuję płatności.',
       noPendingPayments: () => 'Nie masz żadnych zaległych płatności.',
@@ -72,7 +73,7 @@ const languagePacks = [
     predicate: () => true,
     commands: {
       payments: 'payments',
-      meaningOfLife: 'what is the meaning of life',
+      whatIsTheMeaningOfLife: 'what is the meaning of life',
       pay: 'payment',
       skip: 'skip please',
       yes: 'yes please',
@@ -80,6 +81,7 @@ const languagePacks = [
       noThankYou: 'no thank you',
     },
     lines: {
+      theMeaningOfLife: () => 'The meaning of life is: 42',
       noIsNo: () => 'Whatever, then',
       listingPayments: () => 'Listing payments.',
       noPendingPayments: () => 'You have no pending payments.',
@@ -366,7 +368,7 @@ export default class extends Component {
     while(true) {
       const command = await s.waitForCommand([
         { waitFor: commands.payments, command: this.payments.bind(this) },
-        { waitFor: commands.meaningOfLife, command: this.meaningOfLife.bind(this)}
+        { waitFor: commands.whatIsTheMeaningOfLife, command: this.meaningOfLife.bind(this)}
       ])
       await command()
       this.getPayments()
@@ -378,7 +380,7 @@ export default class extends Component {
     const s = await this.state.speech
     const {langPack: {lines}} = this.state
     await s.say(lines.ifYouReallyMustKnow())
-    await s.say('42')
+    await s.say(lines.theMeaningOfLife())
     await s.say(lines.noProblem())
   }
 
