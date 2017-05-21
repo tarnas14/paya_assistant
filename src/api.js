@@ -2,6 +2,12 @@ import qs from 'qs'
 import auth from './auth'
 
 const apiEndpoint = process.env.REACT_APP_API
+let mockPayments = [{
+  id: 0, name: 'czynsz', amount: 850.23
+}, {
+  id: 1, name: 'PLAY za miesiąc kwiecień', amount: 50
+}]
+
 const authorizedFetch = async (endpoint, options) => {
   const response = await fetch(
     endpoint,
@@ -96,14 +102,19 @@ const setOutgoingAccount = async ({accountId, bankId, iban}) => {
 
 const getPendingPayments = async () => {
   if (!apiEndpoint) {
-    return [{
-      name: 'czynsz', amount: 850.23
-    }, {
-      name: 'PLAY za miesiąc kwiecień', amount: 50
-    }]
+    return mockPayments
   }
   
   return await authorizedFetch(`${apiEndpoint}/api/payments`)
+}
+
+const pay = async (id) => {
+  if (!apiEndpoint) {
+    mockPayments = mockPayments.filter(p => p.id !== id) 
+    console.log(mockPayments)
+    return
+  }
+  throw new Error('not implemented')
 }
 
 const login = async (username, password) => {
@@ -141,4 +152,5 @@ export {
   
   getPendingPayments,
   login,
+  pay,
 }

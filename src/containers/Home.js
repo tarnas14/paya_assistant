@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {getPendingPayments} from '../api'
+import {getPendingPayments, pay} from '../api'
 import assistentImage from '../images/paya.png'
 import './Home.css'
 import Paper from 'material-ui/Paper'
@@ -8,6 +8,13 @@ import {cyan300} from 'material-ui/styles/colors'
 import logo from '../images/logo.png'
 import {CardText, CardTitle, CardHeader, Card} from 'material-ui/Card'
 import LinearProgress from 'material-ui/LinearProgress'
+
+const settings = {
+  langs: ['pl-PL'],
+  defaultLangs: ['en-GB', 'en_GB'],
+  pitch: 1,
+  rate: 1
+}
 
 const defaultCommand = process.env.REACT_APP_SKIP_COMMANDS ? 0 : -1
 const speak = !Boolean(process.env.REACT_APP_SKIP_SPEECH)
@@ -18,11 +25,16 @@ const wait = async (delay = 100) => new Promise(resolve => {
 
 const languagePacks = [
   {
-    predicate: () => true,
+    predicate: lang => settings.langs.includes(lang),
     commands: {
-    
+      payments: 'płatności',
+      meaningOfLife: 'jaki jest sens życia',
+      pay: 'zapłać',
+      skip: 'dalej',
+      yes: 'tak',
     },
     lines: {
+      noPendingPayments: () => 'Nie masz żadnych zaległych płatności.',
       availableCommands: () => 'Dostępne komendy to:',
       and: () => 'oraz',
       tryAgain: () => 'Spróbuj ponownie',
@@ -34,6 +46,12 @@ const languagePacks = [
       ifYouReallyMustKnow: () => 'Jeśli już koniecznie chcesz wiedzieć.',
       noProblem: () => 'Nie ma za co ;)',
       yourPendingPayments: () => 'Twoje płatności.',
+      pendingPaymentsNumeral: count => {
+        const map = ['jedną zaległą płatność', 'dwie zaległe płatności', 'trzy zaległe płatności',
+            'cztery zaległe płatności', 'pięć zaległych płatności', 'sześć zaległych płatności', 'siedem zaległych płatności', 'osiem zaległych płatności', 'dziewięć zaległych płatności', 'dziesięć zaległych płatności']
+
+        return map[count - 1]
+      },
       youHavePayments: pending => `Masz ${pending}. Chcesz się nimi teraz zająć?`,
       paymentDescription: payment => `${payment.name}. ${payment.amount}zł`,
       paying: name => `Opłacam ${name}`,
@@ -45,23 +63,65 @@ const languagePacks = [
       skipped: count => `Płatności pominięte: ${count}`,
       thatsAll: name => `To by było na tyle, ${name}`
     }
-  }
+  },
+  {
+    predicate: () => true,
+    commands: {
+      payments: 'payments',
+      meaningOfLife: 'what is the meaning of life',
+      pay: 'payment',
+      skip: 'skip please',
+      yes: 'yes please',
+    },
+    lines: {
+      noPendingPayments: () => 'You have no pending payments.',
+      availableCommands: () => 'Available commands are:',
+      and: () => 'and',
+      tryAgain: () => 'Try again',
+      greeting: name => `Hello, ${name}`,
+      howCanIHelpYou: () => 'How may I help you?',
+      couldNotCatchThat: () => 'I did not catch that. Check if your mic is plugged in.',
+      unknownCommand: () => 'Unknown command',
+      howElseCanIHelpYou: () => 'How else may I help you?',
+      ifYouReallyMustKnow: () => 'If you really insist.',
+      noProblem: () => 'You are welcome ;)',
+      yourPendingPayments: () => 'Pending payments.',
+      pendingPaymentsNumeral: count => {
+        if (count === 1) {
+          return '1 pending payment'
+        }
+
+        return `${count} pending payments`
+      },
+      youHavePayments: pending => `You have ${pending}. Do you want to take care of them now?`,
+      paymentDescription: payment => `${payment.name}. ${payment.amount}zł`,
+      paying: name => `Paying ${name}`,
+      oneMoment: () => 'One moment',
+      considerItDone: () => 'Done and done',
+      skipping: name => `Skipping ${name}`,
+      thatWasTheLastOne: () => 'That was the last one',
+      paid: count => `We took care of ${count} payments`,
+      skipped: count => `${count} left for the next time`,
+      thatsAll: name => `That is all, folks`
+    }
+  },
 ]
 
 const nullStarted = {started: () => {}}
 
 const speech = async (settings, setPack, speaking = () => {}, listening = () => {}, notListening = () => {}, debug = () => {}) => {
+  debug('test test')
   const synthesis = window.speechSynthesis
 
   const voice = await new Promise(resolve => {
     synthesis.onvoiceschanged = () => resolve(
-      synthesis.getVoices().map(v => {
-        debug(`/${v.lang.trim()}/`)
-        return v
-      }).find(v => settings.langs.includes(v.lang)))
+      synthesis.getVoices().find(v => settings.langs.includes(v.lang)) ||
+      synthesis.getVoices().find(v => settings.defaultLangs.includes(v.lang))
+    )
   })
 
   const languagePack = languagePacks.find(pack => pack.predicate(voice.lang))
+  debug(JSON.stringify(languagePack))
   setPack(languagePack)
   const {lines, commands} = languagePack
 
@@ -99,7 +159,6 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
     utt.text = text
     return new Promise((resolve, reject) => {
       utt.onstart = () => {
-        debug(`start of ${text}`)
         callbacks.started()
       }
 
@@ -110,14 +169,11 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
       }
 
       utt.onend = () => {
-        debug(`end of ${text}`)
         callbacks.finished()
         resolve()
       }
       
-      debug('<==>')
       synthesis.speak(utt)
-      debug('<==>')
     })
   }
 
@@ -131,6 +187,7 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
       finished: () => notListening(),//console.log('stopped waiting'),
       result: (h, c) => console.log(h, c),
       error: (e) => console.log('error', e),
+      tryAgain: () => {},
       ...cbs
     }
 
@@ -178,12 +235,24 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
       await say(lines.tryAgain())
     }
 
+    let hit = false
+
     return new Promise((resolve, reject) => {
       recognition.onaudiostart = () => {
+        debug('AUDIO START')
         callbacks.started()
+      }
+      
+      recognition.onsoundend = () => {
+        debug('SOUND END')
+      }
+
+      recognition.onsoundstart = () => {
+        debug('SOUND START')
       }
 
       recognition.onerror = async (e) => {
+        debug(JSON.stringify(e))
         if (e.error === 'no-speech') {
           bounce()
           await say(lines.couldNotCatchThat())
@@ -193,11 +262,33 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
         }
         callbacks.error(e)
         callbacks.finished()
+        recognition.stop()
         reject('error', e)
       }
 
+      recognition.onstart = () => {
+        debug('START')
+      }
+
+      recognition.onend = async () => {
+        debug('END')
+      }
+
+      recognition.onaudioend = () => {
+        debug('AUDIO END')
+      }
+
+      recognition.onnomatch = async () => {
+        debug('NO MATCH')
+        recognition.stop()
+        await wait(300)
+        recognition.start(0)
+      }
+
       recognition.onresult = async (event) => {
-        const hit = event.results[event.results.length - 1][0].transcript
+        hit = event.results[event.results.length - 1][0].transcript
+        debug('HIT')
+        debug(hit)
         const confidence = event.results[0][0].confidence
         callbacks.result(hit, confidence)
 
@@ -227,33 +318,29 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
   }
 }
 
-const settings = {
-  lang: 'pl-PL',
-  langs: ['pl-PL', 'pl_PL', 'en_GB'],
-  pitch: 1,
-  rate: 1
-}
-
 export default class extends Component {
 
   constructor () {
     super()
     this.state = {
       debug: [],
-      langPack: {lines: {}, commands: {}},
+      langPack: languagePacks.find(p => p.predicate()),
       speech: speech(
         settings,
-        langPack => console.log(langPack) || this.setState({langPack}),
+        langPack => this.setState({langPack}),
         text => this.setState({speaking: text}),
         () => this.setState({listening: true}),
         () => this.setState({listening: false}),
-        // a => this.setState(s => ({debug: [a, ...s.debug]}))
+        // a => this.debug(a)
       )
     }
   }
 
+  debug = a => this.setState(s => ({debug: [a, ...s.debug]}))
+
+  getPayments = () => this.setState({pendingPayments: getPendingPayments()})
   async componentDidMount () {
-    this.setState({pendingPayments: getPendingPayments()})
+    this.getPayments()
     await this.greet(await this.props.user)
     await this.next()
   }
@@ -267,13 +354,14 @@ export default class extends Component {
 
   async next () {
     const s = await this.state.speech
-    const {langPack: {lines}} = this.state
+    const {langPack: {lines, commands}} = this.state
     while(true) {
       const command = await s.waitForCommand([
-        { waitFor: 'płatności', command: this.payments.bind(this) },
-        { waitFor: 'jaki jest sens życia', command: this.meaningOfLife.bind(this)}
+        { waitFor: commands.payments, command: this.payments.bind(this) },
+        { waitFor: commands.meaningOfLife, command: this.meaningOfLife.bind(this)}
       ])
       await command()
+      this.getPayments()
       await s.say(lines.howElseCanIHelpYou())
     }
   }
@@ -296,62 +384,63 @@ export default class extends Component {
   success = () => this.setState({showProgressIndicator: false, success: true})
 
   async payments () {
-    const {langPack: {lines}} = this.state
-    const getPaymentsString = number => {
-      const map = ['jedną zaległą płatność', 'dwie zaległe płatności', 'trzy zaległe płatności',
-        'cztery zaległe płatności', 'pięć zaległych płatności', 'sześć zaległych płatności', 'siedem zaległych płatności', 'osiem zaległych płatności', 'dziewięć zaległych płatności', 'dziesięć zaległych płatności']
-
-      return map[number - 1]
-    }
+    const {langPack: {lines, commands}} = this.state
 
     const s = await this.state.speech
     const pendingPayments = await this.state.pendingPayments
 
-    await s.say(lines.yourPendingPayments())
-    await s.say(lines.youHavePayments(getPaymentsString(pendingPayments.length)))
-    const listPayments = async (payments) => {
-      let skipped = 0
-      for(let i = 0; i < payments.length; ++i) {
-        const payment = payments[i]
-        this.setPayment(payment)
-        await s.say(lines.paymentDescription(payment))
-        const command = await s.waitForCommand([
-          {
-            waitFor: 'zapłać',
-            command: async () => {
-              this.progress()
-              await s.say(lines.paying(payment.name))
-              await wait(800)
-              await s.say(lines.oneMoment())
-              await wait(800)
-              this.success()
-              await s.say(lines.considerItDone())
-              await wait(800)
-              this.clearPayment()
-            }
-          },
-          {
-            waitFor: 'dalej',
-            command: async () => {
-              skipped++
-              await s.say(lines.skipping(payment.name), nullStarted)
-              this.clearPayment()
-            }
-          },
-        ])
-        await command()
+
+    if (pendingPayments.length) {
+      await s.say(lines.yourPendingPayments())
+      await s.say(lines.youHavePayments(lines.pendingPaymentsNumeral(pendingPayments.length)))
+      const listPayments = async (payments) => {
+        let skipped = 0
+        for(let i = 0; i < payments.length; ++i) {
+          const payment = payments[i]
+          this.setPayment(payment)
+          await s.say(lines.paymentDescription(payment))
+          const command = await s.waitForCommand([
+            {
+              waitFor: commands.pay,
+              command: async () => {
+                this.progress()
+                await s.say(lines.paying(payment.name))
+                await wait(800)
+                await s.say(lines.oneMoment())
+                await pay(payment.id)
+                this.success()
+                await s.say(lines.considerItDone())
+                await wait(800)
+                this.clearPayment()
+              }
+            },
+            {
+              waitFor: commands.skip,
+              command: async () => {
+                skipped++
+                await s.say(lines.skipping(payment.name), nullStarted)
+                this.clearPayment()
+              }
+            },
+          ])
+          await command()
+        }
+        await s.say(lines.thatWasTheLastOne())
+        await s.say(lines.paid(payments.length - skipped))
+        await s.say(lines.skipped(skipped))
+        await s.say(lines.thatsAll(this.props.user.name))
       }
-      await s.say(lines.thatWasTheLastOne())
-      await s.say(lines.paid(payments.length - skipped))
-      await s.say(lines.skipped(skipped))
-      await s.say(lines.thatsAll(this.props.user.name))
+
+      const command = await s.waitForCommand([{waitFor: commands.yes, command: listPayments.bind(null, pendingPayments)}])
+      await command()
+      return
     }
 
-    const command = await s.waitForCommand([{waitFor: 'tak', command: listPayments.bind(null, pendingPayments)}])
-    await command()
+    await s.say(lines.noPendingPayments())
   }
 
   render () {
+    const {langPack: {lines}} = this.state
     const hal = process.env.REACT_APP_HAL
     const assistent = hal ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/HAL9000.svg/220px-HAL9000.svg.png' : assistentImage
     const {debug, opacity, listening, currentPayment, showProgressIndicator, success, speaking} = this.state
@@ -363,7 +452,7 @@ export default class extends Component {
           title={`${currentPayment.amount}zł`}
         />}
         {currentPayment && showProgressIndicator && <CardText><Loading top={-15}/></CardText>}
-        {currentPayment && success && <CardText><span style={{color: cyan300, fontSize: '2em'}}>Załatwione!</span></CardText>}
+        {currentPayment && success && <CardText><span style={{color: cyan300, fontSize: '2em'}}>{lines.considerItDone()}</span></CardText>}
       </Card>
       {listening && <LinearProgress mode="indeterminate"/>}
       {debug && <div>{debug.map(d => <p>{d}</p>)}</div>}
