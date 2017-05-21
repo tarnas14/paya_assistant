@@ -8,6 +8,7 @@ import {cyan300} from 'material-ui/styles/colors'
 import logo from '../images/logo.png'
 import {CardText, CardTitle, CardHeader, Card} from 'material-ui/Card'
 import LinearProgress from 'material-ui/LinearProgress'
+import Content from '../components/Content'
 
 const settings = {
   langs: ['pl-PL'],
@@ -444,7 +445,7 @@ export default class extends Component {
     const hal = process.env.REACT_APP_HAL
     const assistent = hal ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/HAL9000.svg/220px-HAL9000.svg.png' : assistentImage
     const {debug, opacity, listening, currentPayment, showProgressIndicator, success, speaking} = this.state
-    return <div className='Home' style={{backgroundImage: `url(${assistent})`}}>
+    return <div className='Home' style={{backgroundImage: `url(${assistent})`}}> <Content>
       <Card>
         {!currentPayment && speaking && <CardTitle title={speaking}/>}
         {currentPayment && <CardTitle
@@ -456,6 +457,6 @@ export default class extends Component {
       </Card>
       {listening && <LinearProgress mode="indeterminate"/>}
       {debug && <div>{debug.map(d => <p>{d}</p>)}</div>}
-    </div>
+    </Content></div>
   }
 }
