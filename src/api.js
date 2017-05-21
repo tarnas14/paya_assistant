@@ -3,9 +3,9 @@ import auth from './auth'
 
 const apiEndpoint = process.env.REACT_APP_API
 let mockPayments = [{
-  id: 0, name: 'czynsz', amount: 850.23
+  id: 0, name: 'czynsz kwiecień', amount: 850.23
 }, {
-  id: 1, name: 'PLAY za miesiąc kwiecień', amount: 50
+  id: 1, name: 'PLAY za kwiecień', amount: 50
 }]
 
 const authorizedFetch = async (endpoint, options) => {
@@ -28,7 +28,7 @@ const authorizedFetch = async (endpoint, options) => {
 const getBasicUserInfo = async () => {
   if (!apiEndpoint) {
     return {
-      name: 'tar nas',
+      name: 'Mateusz',
       email: 'john@smith.com',
     }
   }

@@ -37,6 +37,7 @@ const languagePacks = [
       noThankYou: 'nie dziękuję',
     },
     lines: {
+      toSummarize: () => 'Podsumowując',
       theMeaningOfLife: () => 'Sens życia to: 42',
       noIsNo: () => 'Nie to nie',
       listingPayments: () => 'Listuję płatności.',
@@ -60,13 +61,12 @@ const languagePacks = [
       youHavePayments: pending => `Masz ${pending}. Chcesz się nimi teraz zająć?`,
       paymentDescription: payment => `${payment.name}. ${payment.amount}zł`,
       paying: name => `Opłacam ${name}`,
-      oneMoment: () => 'Chwilka',
       considerItDone: () => 'Załatwione',
       skipping: name => `Pomijam ${name}`,
       thatWasTheLastOne: () => 'To była ostatnia płatność na liście',
       paid: count => `Uregulowane płatności: ${count}`,
       skipped: count => `Płatności pominięte: ${count}`,
-      thatsAll: name => `To by było na tyle, ${name}`
+      thatsAll: name => 'To by było na tyle'
     }
   },
   {
@@ -81,6 +81,7 @@ const languagePacks = [
       noThankYou: 'no thank you',
     },
     lines: {
+      toSummarize: () => 'Summarizing,',
       theMeaningOfLife: () => 'The meaning of life is: 42',
       noIsNo: () => 'Whatever, then',
       listingPayments: () => 'Listing payments.',
@@ -105,7 +106,6 @@ const languagePacks = [
       youHavePayments: pending => `You have ${pending}. Do you want to take care of them now?`,
       paymentDescription: payment => `${payment.name}. ${payment.amount}zł`,
       paying: name => `Paying ${name}`,
-      oneMoment: () => 'One moment',
       considerItDone: () => 'Done and done',
       skipping: name => `Skipping ${name}`,
       thatWasTheLastOne: () => 'That was the last one',
@@ -415,7 +415,6 @@ export default class extends Component {
                 this.progress()
                 await s.say(lines.paying(payment.name))
                 await wait(800)
-                await s.say(lines.oneMoment())
                 await pay(payment.id)
                 this.success()
                 await s.say(lines.considerItDone())
@@ -435,6 +434,7 @@ export default class extends Component {
           await command()
         }
         await s.say(lines.thatWasTheLastOne())
+        await s.say(lines.toSummarize())
         await s.say(lines.paid(payments.length - skipped))
         await s.say(lines.skipped(skipped))
         await s.say(lines.thatsAll(this.props.user.name))
