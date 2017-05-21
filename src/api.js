@@ -3,9 +3,9 @@ import auth from './auth'
 
 const apiEndpoint = process.env.REACT_APP_API
 let mockPayments = [{
-  id: 0, name: 'czynsz kwiecień', amount: 850.23
+  id: 0, name: 'Czynsz. Kwiecień.', amount: 850.23
 }, {
-  id: 1, name: 'PLAY za kwiecień', amount: 50
+  id: 1, name: 'PLEJ za kwiecień', amount: 50
 }]
 
 const authorizedFetch = async (endpoint, options) => {
@@ -25,10 +25,13 @@ const authorizedFetch = async (endpoint, options) => {
   return response.json()
 }
 
-const getBasicUserInfo = async () => {
+const getBasicUserInfo = async (username) => {
+  username && window.localStorage.setItem('username', username)
+
   if (!apiEndpoint) {
+    const fromStorage = window.localStorage.getItem('username');
     return {
-      name: 'Mateusz',
+      name: username || (fromStorage === 'undefined' ? undefined : fromStorage) || 'bankITup',
       email: 'john@smith.com',
     }
   }

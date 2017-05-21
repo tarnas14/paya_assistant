@@ -41,7 +41,7 @@ export default class extends Component {
       auth.login(response.token)
     }
 
-    const userInfo = await getBasicUserInfo()
+    const userInfo = await getBasicUserInfo(username)
     this.props.setUser(userInfo)
     this.setState({redirect: true})
   }

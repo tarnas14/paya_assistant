@@ -38,7 +38,7 @@ const languagePacks = [
     },
     lines: {
       toSummarize: () => 'Podsumowując',
-      theMeaningOfLife: () => 'Sens życia to: 42',
+      theMeaningOfLife: () => 'Czasem nie włączą wam prezentacji, ale nie ma co się przejmować jeśli dobrze się bawiliście',
       noIsNo: () => 'Nie to nie',
       listingPayments: () => 'Listuję płatności.',
       noPendingPayments: () => 'Nie masz żadnych zaległych płatności.',
@@ -51,7 +51,7 @@ const languagePacks = [
       unknownCommand: hit => `Nie rozpoznałam komendy '${hit}'.`,
       howElseCanIHelpYou: () => 'W czym jeszcze mogę Ci pomóc?',
       ifYouReallyMustKnow: () => 'Jeśli już koniecznie chcesz wiedzieć.',
-      noProblem: () => 'Nie ma za co ;)',
+      noProblem: () => 'Dzięki za hakaton, było super. ;)',
       pendingPaymentsNumeral: count => {
         const map = ['jedną zaległą płatność', 'dwie zaległe płatności', 'trzy zaległe płatności',
             'cztery zaległe płatności', 'pięć zaległych płatności', 'sześć zaległych płatności', 'siedem zaległych płatności', 'osiem zaległych płatności', 'dziewięć zaległych płatności', 'dziesięć zaległych płatności']
@@ -194,7 +194,7 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
     const callbacks = {
       started: () => listening(),// || console.log('waiting for command'),
       finished: () => notListening(),//console.log('stopped waiting'),
-      result: (h, c) => console.log(h, c),
+      result: (h, c) => {},// console.log(h, c),
       error: (e) => console.log('error', e),
       tryAgain: () => {},
       ...cbs
