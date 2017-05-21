@@ -32,7 +32,7 @@ const languagePacks = [
       meaningOfLife: 'jaki jest sens życia',
       pay: 'zapłać',
       skip: 'dalej',
-      yes: 'tak',
+      yes: 'tak proszę',
     },
     lines: {
       noPendingPayments: () => 'Nie masz żadnych zaległych płatności.',
@@ -46,7 +46,6 @@ const languagePacks = [
       howElseCanIHelpYou: () => 'W czym jeszcze mogę Ci pomóc?',
       ifYouReallyMustKnow: () => 'Jeśli już koniecznie chcesz wiedzieć.',
       noProblem: () => 'Nie ma za co ;)',
-      yourPendingPayments: () => 'Twoje płatności.',
       pendingPaymentsNumeral: count => {
         const map = ['jedną zaległą płatność', 'dwie zaległe płatności', 'trzy zaległe płatności',
             'cztery zaległe płatności', 'pięć zaległych płatności', 'sześć zaległych płatności', 'siedem zaległych płatności', 'osiem zaległych płatności', 'dziewięć zaległych płatności', 'dziesięć zaległych płatności']
@@ -86,7 +85,6 @@ const languagePacks = [
       howElseCanIHelpYou: () => 'How else may I help you?',
       ifYouReallyMustKnow: () => 'If you really insist.',
       noProblem: () => 'You are welcome ;)',
-      yourPendingPayments: () => 'Pending payments.',
       pendingPaymentsNumeral: count => {
         if (count === 1) {
           return '1 pending payment'
@@ -240,6 +238,7 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
 
     return new Promise((resolve, reject) => {
       recognition.onaudiostart = () => {
+        console.log('audio start')
         debug('AUDIO START')
         callbacks.started()
       }
@@ -332,7 +331,7 @@ export default class extends Component {
         text => this.setState({speaking: text}),
         () => this.setState({listening: true}),
         () => this.setState({listening: false}),
-        // a => this.debug(a)
+        // a => console.log(a) && this.debug(a)
       )
     }
   }
@@ -392,7 +391,6 @@ export default class extends Component {
 
 
     if (pendingPayments.length) {
-      await s.say(lines.yourPendingPayments())
       await s.say(lines.youHavePayments(lines.pendingPaymentsNumeral(pendingPayments.length)))
       const listPayments = async (payments) => {
         let skipped = 0
