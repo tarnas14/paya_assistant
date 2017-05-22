@@ -74,7 +74,6 @@ class AppWrapper extends React.Component {
       <Snackbar
         open={Boolean(this.state.error)}
         message={`ERROR: ${this.state.error}`}
-        autoHideDuration={4000}
       />
       <Switch>
         <MatchWhenAuthorized exact path="/" authed={loggedIn} setUser={this.setUser} component={() => <App user={currentUser}><SpeechAPI><HomeContainer user={currentUser}/></SpeechAPI></App>}/>

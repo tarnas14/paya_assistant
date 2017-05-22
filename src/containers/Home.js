@@ -9,6 +9,7 @@ import logo from '../images/logo.png'
 import {CardText, CardTitle, CardHeader, Card} from 'material-ui/Card'
 import LinearProgress from 'material-ui/LinearProgress'
 import Content from '../components/Content'
+import MySnackbar from '../components/MySnackbar'
 
 const settings = {
   langs: ['pl-PL'],
@@ -44,7 +45,7 @@ const languagePacks = [
     },
     lines: {
       toSummarize: () => 'Podsumowując',
-      theMeaningOfLife: () => 'Czasem nie włączą wam prezentacji, ale nie ma co się przejmować jeśli dobrze się bawiliście',
+      theMeaningOfLife: () => 'Czasem podczas pitcha nie włączą prezentacji, ale nie ma co się przejmować jeśli dobrze się bawiliście',
       noIsNo: () => 'Nie to nie',
       listingPayments: () => 'Listuję płatności.',
       noPendingPayments: () => 'Nie masz żadnych zaległych płatności.',
@@ -200,6 +201,7 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
     }
 
     console.log('waiting for commands', commands.map(c => `"${c.waitFor}"`).join())
+
     if (defaultCommand !== -1) {
       console.log('choosing', commands[defaultCommand])
       callbacks.finished()
@@ -361,15 +363,22 @@ export default class extends Component {
     await s.say(lines.howCanIHelpYou()) 
   }
 
+  async waitForCommand (commands) {
+    const s = await this.state.speech
+    this.setState({waitingForCommands: `Dostępne komendy: ${commands.map(c => `"${c.waitFor}"`).join(', ')}`})
+    const command = await s.waitForCommand(commands)
+    this.setState({waitingForCommands: ''})
+    await command()
+  }
+
   async next () {
     const s = await this.state.speech
     const {langPack: {lines, commands}} = this.state
     do {
-      const command = await s.waitForCommand([
+      await this.waitForCommand([
         { waitFor: commands.payments, command: this.payments.bind(this) },
         { waitFor: commands.whatIsTheMeaningOfLife, command: this.meaningOfLife.bind(this)}
       ])
-      await command()
       this.getPayments()
       await s.say(lines.howElseCanIHelpYou())
     } while(Boolean(speak))
@@ -385,9 +394,7 @@ export default class extends Component {
 
   listening = l => this.setState({opacity: l ? 1 : 0.7})
 
-  // setPayment = () => {}
   setPayment = payment => this.setState({currentPayment: payment})
-  // clearPayment = () => {}
   clearPayment = () => this.setState({speaking: '', currentPayment: undefined, showProgressIndicator: false, success: false})
   progress = () => this.setState({showProgressIndicator: true})
   success = () => this.setState({showProgressIndicator: false, success: true})
@@ -407,7 +414,7 @@ export default class extends Component {
           const payment = payments[i]
           this.setPayment(payment)
           await s.say(lines.paymentDescription(payment))
-          const command = await s.waitForCommand([
+          await this.waitForCommand([
             {
               waitFor: commands.pay,
               command: async () => {
@@ -430,7 +437,6 @@ export default class extends Component {
               }
             },
           ])
-          await command()
         }
         await s.say(lines.thatWasTheLastOne())
         await s.say(lines.toSummarize())
@@ -452,12 +458,11 @@ export default class extends Component {
         }
       }
 
-      const command = await s.waitForCommand([
+      await this.waitForCommand([
         {waitFor: commands.yes, command: listPayments.bind(null, pendingPayments)},
         {waitFor: commands.onlyList, command: onlyList.bind(null, pendingPayments)},
         {waitFor: commands.noThankYou, command: async () => await s.say(lines.noIsNo()) }
       ])
-      await command()
       return
     }
 
@@ -481,6 +486,10 @@ export default class extends Component {
       </Card>
       {listening && <LinearProgress mode="indeterminate"/>}
       {debug && <div>{debug.map(d => <p>{d}</p>)}</div>}
+      <MySnackbar
+        open={Boolean(this.state.waitingForCommands)}
+        message={this.state.waitingForCommands}
+      />
     </Content></div>
   }
 }
