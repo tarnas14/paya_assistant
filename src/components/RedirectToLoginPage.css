@@ -1,3 +1,23 @@
+.loginPage {
+  text-align: center;
+  position: relative;
+  width: 379px;
+  height: 800px;
+  margin: 0 auto;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.loginPage .container {
+  width: 346px;
+  height: 616px;
+  margin: 0 auto;
+  position: relative;
+  top: 91px;
+  overflow: hidden;
+}
+
 .loginPage.content {
     padding: 0;
     margin: 0;
@@ -10,7 +30,7 @@
 }
 
 .loginPage .form {
-    padding: 100px 0;
+    padding: 100px 0 120px 0;
     background: #4DD0E1;
 }
 

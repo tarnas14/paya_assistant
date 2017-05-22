@@ -9,6 +9,7 @@ import urijs from 'urijs'
 import { Redirect, } from 'react-router-dom'
 import {login as apiLogin, getBasicUserInfo} from '../api'
 import auth from '../auth'
+import frame from '../images/phone.frame.png'
 
 const isDev = () => process.env.REACT_APP_IS_DEV === 'true'
 
@@ -42,6 +43,7 @@ export default class extends Component {
     }
 
     const userInfo = await getBasicUserInfo(username)
+    window.location.reload()
     this.props.setUser(userInfo)
     this.setState({redirect: true})
   }
@@ -58,7 +60,7 @@ export default class extends Component {
     const authroute = `${document.location.origin}/login?afterLoginGoTo=${encodeURIComponent(document.location.pathname)}&token=somethingSomething`
 
     const {username, password} = this.props
-    return <div className='loginPage'>
+    return <div className='loginPage' style={{backgroundImage: `url(${frame}`}}><div className='container'>
       <div className='logo'>
           <img src={logo} style={{width: '100%', maxWidth: '300px'}} alt='tiper <3 payments.' />
       </div>
@@ -73,6 +75,6 @@ export default class extends Component {
              <div style={{textAlign: 'right'}}><RaisedButton label="Zaloguj się" primary={true} onClick={this.login}/></div>
           </div>
       </div>
-    </div>
+    </div></div>
   }
 }
