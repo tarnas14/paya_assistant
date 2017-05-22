@@ -14,6 +14,7 @@ import Divider from 'material-ui/Divider'
 import FontIcon from 'material-ui/FontIcon'
 
 import {Link} from 'react-router-dom'
+import frame from './images/phone.frame.png'
 
 import './App.css'
 
@@ -35,35 +36,35 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <AppBar
-          iconClassNameRight="muidocs-icon-navigation-expand-more"
-          onLeftIconButtonTouchTap={this.handleMenuClick}
-          title="PAYA"
-        />
-        <Drawer
-          docked={false}
-          onRequestChange={open => this.setState({isDrawerOpen: open})}
-          open={this.state.isDrawerOpen}
-        >
-          <User displayEmail user={this.props.user}/>
-          <MenuItem
-            leftIcon={<EuroSymbol/>}
-            style={{textAlign: 'left'}}
-            containerElement={<Link to="/" />}
-            onTouchTap={this.handleMenuClose}
-            primaryText="Home"
+      <div className="App" style={{backgroundImage: `url(${frame}`}}>
+        <div className="container">
+          <AppBar
+            showMenuIconButton={false}
+            title="PAYA"
           />
-          <Divider/>
-          <MenuItem
-            style={{textAlign: 'left'}}
-            leftIcon={<FontIcon/>}
-            containerElement={<Link to="/logout" />}
-            primaryText="Logout"
-            onTouchTap={this.handleMenuClose}
-          />
-        </Drawer>
-        {this.props.children}
+      {/*<Drawer
+            onRequestChange={open => this.setState({isDrawerOpen: open})}
+            open={this.state.isDrawerOpen}
+          >
+            <User displayEmail user={this.props.user}/>
+            <MenuItem
+              leftIcon={<EuroSymbol/>}
+              style={{textAlign: 'left'}}
+              containerElement={<Link to="/" />}
+              onTouchTap={this.handleMenuClose}
+              primaryText="Home"
+            />
+            <Divider/>
+            <MenuItem
+              style={{textAlign: 'left'}}
+              leftIcon={<FontIcon/>}
+              containerElement={<Link to="/logout" />}
+              primaryText="Logout"
+              onTouchTap={this.handleMenuClose}
+            />
+          </Drawer>*/}
+          {this.props.children}
+        </div>
       </div>
     )
   }

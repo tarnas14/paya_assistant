@@ -1,5 +1,21 @@
 .App {
   text-align: center;
+  position: relative;
+  width: 379px;
+  height: 800px;
+  margin: 0 auto;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.App .container {
+  width: 346px;
+  height: 616px;
+  margin: 0 auto;
+  position: relative;
+  top: 91px;
+  overflow: hidden;
 }
 
 .App-logo {

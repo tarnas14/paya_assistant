@@ -97,10 +97,12 @@ const muiTheme = getMuiTheme({
 })
 
 ReactDOM.render(
-  <MuiThemeProvider muiTheme={muiTheme}>
-    <Router>
-      <AppWrapper/>
-    </Router>
-  </MuiThemeProvider>,
+  <div className="container">
+    <MuiThemeProvider muiTheme={muiTheme}>
+      <Router>
+        <AppWrapper/>
+      </Router>
+    </MuiThemeProvider>
+  </div>,
   document.getElementById('root')
 )
