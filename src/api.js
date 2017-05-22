@@ -3,9 +3,9 @@ import auth from './auth'
 
 const apiEndpoint = process.env.REACT_APP_API
 let mockPayments = [{
-  id: 0, name: 'Czynsz. Kwiecień.', amount: 850.23
+  id: 0, name: 'Czynsz za miesiąc kwiecień.', amount: 850.23
 }, {
-  id: 1, name: 'PLEJ za kwiecień', amount: 50
+  id: 1, name: 'Faktura za telefon za miesiąc kwiecień', amount: 50
 }]
 
 const authorizedFetch = async (endpoint, options) => {

@@ -20,6 +20,12 @@ const settings = {
 const defaultCommand = process.env.REACT_APP_SKIP_COMMANDS ? 0 : -1
 const speak = !Boolean(process.env.REACT_APP_SKIP_SPEECH)
 
+const femaleVoiceNumeral = number => [
+  'zero',
+  'jedna',
+  'dwie',
+][number]
+
 const wait = async (delay = 100) => new Promise(resolve => {
   window.setTimeout(() => resolve(), delay)
 })
@@ -64,8 +70,8 @@ const languagePacks = [
       considerItDone: () => 'Załatwione',
       skipping: name => `Pomijam ${name}`,
       thatWasTheLastOne: () => 'To była ostatnia płatność na liście',
-      paid: count => `Uregulowane płatności: ${count}`,
-      skipped: count => `Płatności pominięte: ${count}`,
+      paid: count => `Uregulowane płatności: ${femaleVoiceNumeral(count)}`,
+      skipped: count => `Płatności pominięte: ${femaleVoiceNumeral(count)}`,
       thatsAll: name => 'To by było na tyle'
     }
   },
