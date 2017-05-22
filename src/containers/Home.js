@@ -129,7 +129,7 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
     )
   })
 
-  const languagePack = languagePacks.find(pack => pack.predicate(voice.lang))
+  const languagePack = languagePacks.find(pack => pack.predicate(voice && voice.lang))
   debug(JSON.stringify(languagePack))
   setPack(languagePack)
   const {lines, commands} = languagePack
@@ -138,13 +138,6 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
   utt.pitch = settings.pitch
   utt.rate = settings.rate
   utt.voice = voice
-  debug('///')
-  debug(JSON.stringify(utt.voice.lang))
-  debug(JSON.stringify(utt.voice.default))
-  debug(JSON.stringify(utt.voice.localService))
-  debug(JSON.stringify(utt.voice.name))
-  debug(JSON.stringify(utt.voice.voiceURI))
-  debug('///')
   utt.onboundary = () => console.log('boundary')
   utt.onmark = () => console.log('mark')
   utt.onpause = () => console.log('pause')
@@ -365,7 +358,7 @@ export default class extends Component {
   async next () {
     const s = await this.state.speech
     const {langPack: {lines, commands}} = this.state
-    while(true) {
+    do {
       const command = await s.waitForCommand([
         { waitFor: commands.payments, command: this.payments.bind(this) },
         { waitFor: commands.whatIsTheMeaningOfLife, command: this.meaningOfLife.bind(this)}
@@ -373,7 +366,7 @@ export default class extends Component {
       await command()
       this.getPayments()
       await s.say(lines.howElseCanIHelpYou())
-    }
+    } while(Boolean(speak))
   }
 
   async meaningOfLife () {
