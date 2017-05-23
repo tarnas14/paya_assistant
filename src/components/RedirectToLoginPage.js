@@ -73,6 +73,7 @@ export default class extends Component {
                 <TextField floatingLabelFixed={true} fullWidth={true} floatingLabelText='Hasło' value={password} type='password' onChange={this.changePassword} />
              </div>
              <div style={{textAlign: 'right'}}><RaisedButton label="Zaloguj się" primary={true} onClick={this.login}/></div>
+             <p style={{fontSize: '0.9em'}}>Nazwa użytkownika i hasło są dowolne <em>(porównaj: aplikacja typu proof of concept)</em>, asystent wykorzysta nazwę użytkownika do zwracania się do Ciebie :)</p>
           </div>
       </div>
     </div></div>
