@@ -32,14 +32,19 @@ export default class extends Component {
   login = async (e) => {
     e.preventDefault()
     const {username, password} = this.state
-    const response = await apiLogin(username, password)
-    if (response.token) {
-      auth.login(response.token)
-    }
+    const responsePromise = apiLogin(username, password)
+    const userInfoPromise = getBasicUserInfo(username)
 
-    const userInfo = await getBasicUserInfo(username)
-    this.props.setUser(userInfo)
-    this.setState({redirect: true})
+    const response = await responsePromise
+    const userInfo = await userInfoPromise
+
+    this.setState({redirect: true}, () => {
+      if (response.token) {
+        auth.login(response.token)
+      }
+
+      this.props.setUser(userInfo)
+    })
   }
 
   render () {

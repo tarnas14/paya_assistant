@@ -54,7 +54,6 @@ class AppWrapper extends React.Component {
   }
 
   async componentDidMount () {
-    console.log('mounted')
     if (!this.state.currentUser && auth.loggedIn()) {
       this.setUser(await getBasicUserInfo())
     }
@@ -67,7 +66,6 @@ class AppWrapper extends React.Component {
   setError = e => this.setState({error: e})
 
   render () {
-    console.log('app wrapper render')
     const loggedIn = auth.loggedIn()
     const {currentUser} = this.state
     return <div>
