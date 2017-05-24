@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Snackbar from 'material-ui/Snackbar'
 import ReactDOM from 'react-dom'
-import urijs from 'urijs'
 import {
   Switch,
   BrowserRouter as Router,

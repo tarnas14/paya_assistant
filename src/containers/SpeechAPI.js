@@ -1,5 +1,5 @@
 import React from 'react'
-import {CardText, CardTitle, CardHeader, Card} from 'material-ui/Card'
+import {CardText, Card} from 'material-ui/Card'
 import Content from '../components/Content'
 
 const synthesis = Boolean(window.speechSynthesis)

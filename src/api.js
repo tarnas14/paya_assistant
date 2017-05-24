@@ -1,4 +1,3 @@
-import qs from 'qs'
 import auth from './auth'
 
 const apiEndpoint = process.env.REACT_APP_API

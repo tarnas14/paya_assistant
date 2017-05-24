@@ -1,17 +1,12 @@
 import React, {Component} from 'react'
-import Content from '../components/Content'
 import logo from '../images/logo.png'
 import RaisedButton from 'material-ui/RaisedButton'
 import './RedirectToLoginPage.css'
-import Paper from 'material-ui/Paper'
 import TextField from 'material-ui/TextField'
-import urijs from 'urijs'
 import { Redirect, } from 'react-router-dom'
 import {login as apiLogin, getBasicUserInfo} from '../api'
 import auth from '../auth'
 import frame from '../images/phone.frame.png'
-
-const isDev = () => process.env.REACT_APP_IS_DEV === 'true'
 
 export default class extends Component {
  
@@ -53,11 +48,6 @@ export default class extends Component {
       const from = '/'
       return <Redirect to={from} />
     }
-
-    const redirectUri = `${document.location.origin}/login?afterLoginGoTo=${document.location.pathname}`
-    const backendRedirectString = `${process.env.REACT_APP_API_LOGIN}?redirectUrl=${encodeURIComponent(redirectUri)}`
-
-    const authroute = `${document.location.origin}/login?afterLoginGoTo=${encodeURIComponent(document.location.pathname)}&token=somethingSomething`
 
     const {username, password} = this.props
     return <div className='loginPage' style={{backgroundImage: `url(${frame}`}}><div className='container'>

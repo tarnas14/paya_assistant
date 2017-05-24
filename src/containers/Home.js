@@ -2,11 +2,9 @@ import React, {Component} from 'react'
 import {getPendingPayments, pay} from '../api'
 import assistentImage from '../images/paya.png'
 import './Home.css'
-import Paper from 'material-ui/Paper'
 import Loading from '../components/Loading'
 import {cyan300} from 'material-ui/styles/colors'
-import logo from '../images/logo.png'
-import {CardText, CardTitle, CardHeader, Card} from 'material-ui/Card'
+import {CardText, CardTitle, Card} from 'material-ui/Card'
 import LinearProgress from 'material-ui/LinearProgress'
 import Content from '../components/Content'
 import MySnackbar from '../components/MySnackbar'
@@ -139,7 +137,7 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
   const languagePack = languagePacks.find(pack => pack.predicate(voice && voice.lang))
   debug(JSON.stringify(languagePack))
   setPack(languagePack)
-  const {lines, commands} = languagePack
+  const {lines} = languagePack
 
   const utt = new SpeechSynthesisUtterance()
   utt.pitch = settings.pitch
@@ -188,7 +186,6 @@ const speech = async (settings, setPack, speaking = () => {}, listening = () => 
 
   const speechRecognition = window.webkitSpeechRecognition
   const speechGrammarList = window.webkitSpeechGrammarList
-  const speechRecognitionEvent = window.webkitSpeechRecognitionEvent
 
   const waitForCommand = async (commands, cbs) => {
     const callbacks = {
@@ -473,7 +470,7 @@ export default class extends Component {
     const {langPack: {lines}} = this.state
     const hal = process.env.REACT_APP_HAL
     const assistent = hal ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/HAL9000.svg/220px-HAL9000.svg.png' : assistentImage
-    const {debug, opacity, listening, currentPayment, showProgressIndicator, success, speaking} = this.state
+    const {debug, listening, currentPayment, showProgressIndicator, success, speaking} = this.state
     return <div className='Home' style={{backgroundImage: `url(${assistent})`}}> <Content>
       <Card>
         {!currentPayment && speaking && <CardTitle title={speaking}/>}
