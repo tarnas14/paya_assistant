@@ -12,7 +12,6 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 import {getBasicUserInfo} from './api'
 import auth from './auth'
 import HomeContainer from './containers/Home'
-import SpeechAPI from './containers/SpeechAPI'
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
@@ -75,7 +74,7 @@ class AppWrapper extends React.Component {
         message={`ERROR: ${this.state.error}`}
       />
       <Switch>
-        <MatchWhenAuthorized exact path="/" authed={loggedIn} setUser={this.setUser} component={() => <App user={currentUser}><SpeechAPI><HomeContainer user={currentUser}/></SpeechAPI></App>}/>
+        <MatchWhenAuthorized exact path="/" authed={loggedIn} setUser={this.setUser} component={() => <App user={currentUser}><HomeContainer user={currentUser}/></App>}/>
         <MatchWhenAuthorized exact path="/logout" authed={loggedIn} setUser={this.setUser} component={Logout}/>
         <Route path="/" component={() => <Content>404 not found</Content>}/>
       </Switch>

@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import AppBar from 'material-ui/AppBar'
-import frame from './images/phone.frame.png'
 
+import SpeechAPIRequired from './containers/SpeechAPI'
+import frame from './images/phone.frame.png'
 import './App.css'
 
 class App extends Component {
@@ -28,7 +29,7 @@ class App extends Component {
             showMenuIconButton={false}
             title="PAYA"
           />
-          {this.props.children}
+          <SpeechAPIRequired>{this.props.children}</SpeechAPIRequired>
         </div>
       </div>
     )

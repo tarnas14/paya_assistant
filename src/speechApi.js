@@ -2,6 +2,13 @@ import languagePacks from './languagePacks'
 import {speak, defaultCommand} from './environment'
 import {wait} from './utils'
 
+export const isSpeechAvailable = () => {
+  const synthesis = Boolean(window.speechSynthesis)
+  const recognition = Boolean(window.SpeechRecognition || window.webkitSpeechRecognition)
+
+  return synthesis && recognition
+}
+
 export default async (settings, setPack, speaking = () => {}, listening = () => {}, notListening = () => {}, debug = () => {}) => {
   debug('test test')
   const synthesis = window.speechSynthesis
