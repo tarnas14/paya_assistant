@@ -1,9 +1,0 @@
-.myAccountContainer {
-  margin: 0 auto
-}
-
-@media all and (min-width: 800px) {
-  .myAccountContainer {
-    max-width: 60%
-  }
-}
