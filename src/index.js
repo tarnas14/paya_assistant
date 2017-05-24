@@ -54,7 +54,8 @@ class AppWrapper extends React.Component {
   }
 
   async componentDidMount () {
-    if (auth.loggedIn()) {
+    console.log('mounted')
+    if (!this.state.currentUser && auth.loggedIn()) {
       this.setUser(await getBasicUserInfo())
     }
   }
@@ -66,6 +67,7 @@ class AppWrapper extends React.Component {
   setError = e => this.setState({error: e})
 
   render () {
+    console.log('app wrapper render')
     const loggedIn = auth.loggedIn()
     const {currentUser} = this.state
     return <div>
@@ -74,7 +76,11 @@ class AppWrapper extends React.Component {
         message={`ERROR: ${this.state.error}`}
       />
       <Switch>
-        <MatchWhenAuthorized exact path="/" authed={loggedIn} setUser={this.setUser} component={() => <App user={currentUser}><HomeContainer user={currentUser}/></App>}/>
+        <MatchWhenAuthorized exact path="/" authed={loggedIn} setUser={this.setUser} component={() => <App user={currentUser}>
+          <HomeContainer
+            user={currentUser}
+          />
+        </App>}/>
         <MatchWhenAuthorized exact path="/logout" authed={loggedIn} setUser={this.setUser} component={Logout}/>
         <Route path="/" component={() => <Content>404 not found</Content>}/>
       </Switch>

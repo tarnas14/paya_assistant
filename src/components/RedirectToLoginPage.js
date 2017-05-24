@@ -38,7 +38,6 @@ export default class extends Component {
     }
 
     const userInfo = await getBasicUserInfo(username)
-    window.location.reload()
     this.props.setUser(userInfo)
     this.setState({redirect: true})
   }
