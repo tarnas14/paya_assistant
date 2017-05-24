@@ -10,7 +10,6 @@ import Content from '../components/Content'
 import MySnackbar from '../components/MySnackbar'
 
 import speech from '../speechApi'
-import languagePacks from '../languagePacks'
 import {speak} from '../environment'
 import {wait} from '../utils'
 
@@ -29,22 +28,24 @@ export default class extends Component {
     super()
     this.state = {
       debug: [],
-      langPack: languagePacks.find(p => p.predicate()),
+      langPack: {},
       speech: speech(
         settings,
-        langPack => this.setState({langPack}),
         text => this.setState({speaking: text}),
         () => this.setState({listening: true}),
         () => this.setState({listening: false}),
-        // a => console.log(a) && this.debug(a)
+        // a => console.log(a) && this.debug(a),
       )
     }
   }
 
   debug = a => this.setState(s => ({debug: [a, ...s.debug]}))
-
   getPayments = () => this.setState({pendingPayments: getPendingPayments()})
+
   async componentDidMount () {
+    const speech = await this.state.speech
+    this.setState({langPack: speech.getLanguagePack()})
+
     this.getPayments()
     await this.greet(await this.props.user)
     await this.next()

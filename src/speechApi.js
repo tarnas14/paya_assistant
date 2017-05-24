@@ -9,7 +9,7 @@ export const isSpeechAvailable = () => {
   return synthesis && recognition
 }
 
-export default async (settings, setPack, speaking = () => {}, listening = () => {}, notListening = () => {}, debug = () => {}) => {
+export default async (settings, speaking = () => {}, listening = () => {}, notListening = () => {}, debug = () => {}) => {
   debug('test test')
   const synthesis = window.speechSynthesis
 
@@ -22,7 +22,6 @@ export default async (settings, setPack, speaking = () => {}, listening = () => 
 
   const languagePack = languagePacks.find(pack => pack.predicate(voice && voice.lang))
   debug(JSON.stringify(languagePack))
-  setPack(languagePack)
   const {lines} = languagePack
 
   const utt = new SpeechSynthesisUtterance()
@@ -209,5 +208,6 @@ export default async (settings, setPack, speaking = () => {}, listening = () => 
   return {
     say,
     waitForCommand,
+    getLanguagePack: () => languagePack
   }
 }
